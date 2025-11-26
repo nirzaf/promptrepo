@@ -1,37 +1,65 @@
-import Link from "next/link"
+import Link from "next/link";
+import { getPublicPrompts, getTrendingPrompts } from "@/db/queries/prompts";
+import { PromptCard } from "@/components/prompts/prompt-card";
+import { Button } from "@/components/ui/button";
 
-export default function Home() {
+export default async function HomePage() {
+  const [recentPrompts, trendingPrompts] = await Promise.all([
+    getPublicPrompts(12),
+    getTrendingPrompts(6),
+  ]);
+
   return (
-    <div className="font-sans">
-      <section className="relative overflow-hidden rounded-2xl border border-black/10 bg-gradient-to-b from-white to-zinc-50 p-10 shadow-sm dark:border-white/10 dark:from-black dark:to-zinc-900">
-        <div className="mx-auto max-w-3xl text-center">
-          <h1 className="text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100">PromptVault</h1>
-          <p className="mt-4 text-lg text-zinc-600 dark:text-zinc-400">A professional, open-source AI prompts platform. Built for speed, quality, and collaboration.</p>
-          <div className="mt-6 flex justify-center gap-4">
-            <Link href="/requirements" className="inline-flex h-11 items-center rounded-full bg-zinc-900 px-6 text-white transition-colors hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200">View Requirements</Link>
-            <a href="https://nextjs.org" target="_blank" rel="noopener noreferrer" className="inline-flex h-11 items-center rounded-full border border-black/10 bg-white px-6 text-zinc-700 transition-colors hover:bg-zinc-50 dark:border-white/15 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800">Learn More</a>
-          </div>
+    <div className="container mx-auto px-4 py-8">
+      {/* Hero Section */}
+      <section className="text-center py-16">
+        <h1 className="text-5xl font-bold mb-4">
+          Discover Amazing AI Prompts
+        </h1>
+        <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+          Browse, share, and collaborate on the best prompts for ChatGPT, Claude, Gemini, and more
+        </p>
+        <div className="flex gap-4 justify-center">
+          <Button size="lg" asChild>
+            <Link href="/explore">Explore Prompts</Link>
+          </Button>
+          <Button size="lg" variant="outline" asChild>
+            <Link href="/dashboard/prompts/new">Submit a Prompt</Link>
+          </Button>
         </div>
       </section>
 
-      <section className="mt-10 grid gap-6 sm:grid-cols-2">
-        <div className="rounded-xl border border-black/10 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-zinc-900">
-          <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">Modern Stack</h2>
-          <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">Next.js, React 19, Tailwind CSS v4, and a clean component architecture.</p>
+      {/* Trending Section */}
+      {trendingPrompts.length > 0 && (
+        <section className="mb-16">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-3xl font-bold">🔥 Trending Now</h2>
+            <Button variant="ghost" asChild>
+              <Link href="/explore?sort=trending">View All</Link>
+            </Button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {trendingPrompts.map((prompt) => (
+              <PromptCard key={prompt.id} prompt={prompt} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Recent Prompts */}
+      <section>
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-3xl font-bold">Latest Prompts</h2>
+          <Button variant="ghost" asChild>
+            <Link href="/explore">View All</Link>
+          </Button>
         </div>
-        <div className="rounded-xl border border-black/10 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-zinc-900">
-          <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">Beautiful UI/UX</h2>
-          <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">Accessible, responsive, and themeable design with light and dark mode.</p>
-        </div>
-        <div className="rounded-xl border border-black/10 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-zinc-900">
-          <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">Open Source Friendly</h2>
-          <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">Clear structure and conventions to invite contributions and innovation.</p>
-        </div>
-        <div className="rounded-xl border border-black/10 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-zinc-900">
-          <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">Future-Ready</h2>
-          <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">Designed to scale with search, ratings, collections, and more.</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {recentPrompts.map((prompt) => (
+            <PromptCard key={prompt.id} prompt={prompt} />
+          ))}
         </div>
       </section>
     </div>
-  )
+  );
 }

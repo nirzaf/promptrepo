@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import { SITE_CONFIG } from "@/config/site";
+import { Navbar } from "@/components/layout/navbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,8 +15,39 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PromptVault",
-  description: "A professional, open-source AI prompts platform.",
+  title: {
+    default: SITE_CONFIG.name,
+    template: `%s | ${SITE_CONFIG.name}`,
+  },
+  description: SITE_CONFIG.description,
+  keywords: [
+    "AI prompts",
+    "ChatGPT prompts",
+    "Claude prompts",
+    "Gemini prompts",
+    "prompt engineering",
+    "AI tools",
+  ],
+  authors: [
+    {
+      name: SITE_CONFIG.name,
+    },
+  ],
+  creator: SITE_CONFIG.name,
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: SITE_CONFIG.url,
+    title: SITE_CONFIG.name,
+    description: SITE_CONFIG.description,
+    siteName: SITE_CONFIG.name,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE_CONFIG.name,
+    description: SITE_CONFIG.description,
+    creator: "@promptvault",
+  },
 };
 
 export default function RootLayout({
@@ -26,16 +57,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <script
-          dangerouslySetInnerHTML={{
-            __html:
-              "(function(){try{var t=localStorage.getItem('theme');var m=window.matchMedia('(prefers-color-scheme: dark)').matches;var d=t?t==='dark':m;var e=document.documentElement;if(d){e.classList.add('dark');}else{e.classList.remove('dark');}}catch(e){}})();",
-          }}
-        />
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
         <Navbar />
-        <main className="mx-auto max-w-6xl px-4 py-8">{children}</main>
-        <Footer />
+        {children}
       </body>
     </html>
   );
