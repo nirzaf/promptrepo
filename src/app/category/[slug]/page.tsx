@@ -28,17 +28,7 @@ export default async function CategoryPage({ params }: Props) {
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-4">
           {category.icon && (
-            <div
-              className="w-12 h-12 rounded-lg flex items-center justify-center text-2xl"
-              style={{
-                backgroundColor: category.color
-                  ? `${category.color}33`
-                  : "var(--color-muted)",
-                color: category.color || "var(--color-foreground)",
-              }}
-            >
-              {category.icon}
-            </div>
+            <CategoryIconChip icon={category.icon} color={category.color} />
           )}
           <div>
             <h1 className="text-4xl font-bold">{category.name}</h1>
@@ -70,3 +60,28 @@ export default async function CategoryPage({ params }: Props) {
     </div>
   );
 }
+
+function toPascalCase(input: string): string {
+  return input
+    .split(/[^a-zA-Z0-9]+/)
+    .filter(Boolean)
+    .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+    .join("");
+}
+
+function CategoryIconChip({ icon, color }: { icon: string; color: string | null }) {
+  const key = toPascalCase(icon);
+  const IconComp = (Icons as Record<string, any>)[key] || null;
+  return (
+    <div
+      className="w-12 h-12 rounded-lg flex items-center justify-center"
+      style={{
+        backgroundColor: color ? `${color}33` : "var(--color-muted)",
+        color: color || "var(--color-foreground)",
+      }}
+    >
+      {IconComp ? <IconComp className="w-6 h-6" /> : <span className="text-xl">{icon}</span>}
+    </div>
+  );
+}
+import * as Icons from "lucide-react";
