@@ -82,7 +82,7 @@ export default async function PromptDetailPage({ params }: Props) {
       {/* Main Content */}
       <div className="bg-card border rounded-lg p-6 mb-8">
         <h2 className="text-xl font-semibold mb-4">Prompt</h2>
-        <div className="rounded-lg p-4 font-mono text-sm whitespace-pre-wrap" style={{ backgroundColor: 'var(--color-muted)' }}>
+        <div className="rounded-lg p-4 font-mono text-sm whitespace-pre-wrap" style={{ backgroundColor: 'var(--color-muted)', color: 'var(--color-muted-foreground)' }}>
           {prompt.content}
         </div>
       </div>
@@ -99,7 +99,7 @@ export default async function PromptDetailPage({ params }: Props) {
       {prompt.exampleOutput && (
         <div className="bg-card border rounded-lg p-6 mb-8">
           <h2 className="text-xl font-semibold mb-4">Example Output</h2>
-          <div className="rounded-lg p-4 text-sm whitespace-pre-wrap" style={{ backgroundColor: 'var(--color-muted)' }}>
+          <div className="rounded-lg p-4 text-sm whitespace-pre-wrap" style={{ backgroundColor: 'var(--color-muted)', color: 'var(--color-muted-foreground)' }}>
             {prompt.exampleOutput}
           </div>
         </div>
