@@ -35,7 +35,7 @@ export default function ThemeToggle() {
       type="button"
       aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
       onClick={toggle}
-      className="inline-flex h-9 items-center rounded-full border border-black/10 bg-white px-3 text-sm font-medium text-zinc-700 shadow-sm transition-colors hover:bg-zinc-50 dark:border-white/15 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
+      className="inline-flex h-9 items-center rounded-full border border-border bg-card px-3 text-sm font-medium text-foreground shadow-sm transition-colors hover:bg-card/90"
     >
       <span className="mr-2 inline-block h-4 w-4 align-middle">
         {mounted && (
@@ -54,4 +54,3 @@ export default function ThemeToggle() {
     </button>
   )
 }
-

@@ -65,7 +65,7 @@ export function StarRating({
                             "w-5 h-5",
                             (hover || rating) >= value
                                 ? "fill-yellow-400 text-yellow-400"
-                                : "text-gray-300"
+                                : "text-muted-foreground"
                         )}
                     />
                 </button>

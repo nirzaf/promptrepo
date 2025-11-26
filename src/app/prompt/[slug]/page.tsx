@@ -33,8 +33,8 @@ export default async function PromptDetailPage({ params }: Props) {
               style={{
                 backgroundColor: prompt.category.color
                   ? `${prompt.category.color}20`
-                  : "#f3f4f6",
-                color: prompt.category.color || "#374151",
+                  : "var(--color-muted)",
+                color: prompt.category.color || "var(--color-foreground)",
               }}
             >
               {prompt.category.name}

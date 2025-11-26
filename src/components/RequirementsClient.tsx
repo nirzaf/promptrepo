@@ -23,9 +23,9 @@ export default function RequirementsClient() {
   if (loading) {
     return (
       <div className="animate-pulse space-y-3">
-        <div className="h-8 w-64 rounded bg-zinc-200 dark:bg-zinc-800" />
-        <div className="h-4 w-full rounded bg-zinc-200 dark:bg-zinc-800" />
-        <div className="h-4 w-5/6 rounded bg-zinc-200 dark:bg-zinc-800" />
+        <div className="h-8 w-64 rounded bg-muted" />
+        <div className="h-4 w-full rounded bg-muted" />
+        <div className="h-4 w-5/6 rounded bg-muted" />
       </div>
     )
   }
