@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CommandPalette } from "@/components/search/command-palette";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export function Navbar() {
     return (
@@ -26,6 +27,7 @@ export function Navbar() {
                             >
                                 Categories
                             </Link>
+                            <ThemeToggle />
                             <Link
                                 href="/dashboard/prompts/new"
                                 className="px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:bg-primary/90 transition-colors"
