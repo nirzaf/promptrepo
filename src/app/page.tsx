@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import Link from "next/link";
 import { getPublicPrompts, getTrendingPrompts } from "@/db/queries/prompts";
 import { PromptCard } from "@/components/prompts/prompt-card";
@@ -13,11 +14,10 @@ export default async function HomePage() {
     <div className="container mx-auto px-4 py-8">
       {/* Hero Section */}
       <section className="text-center py-16">
-        <h1 className="text-5xl font-bold mb-4">
-          Discover Amazing AI Prompts
-        </h1>
+        <h1 className="text-5xl font-bold mb-4">Discover Amazing AI Prompts</h1>
         <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-          Browse, share, and collaborate on the best prompts for ChatGPT, Claude, Gemini, and more
+          Browse, share, and collaborate on the best prompts for ChatGPT,
+          Claude, Gemini, and more
         </p>
         <div className="flex gap-4 justify-center">
           <Button size="lg" asChild>
