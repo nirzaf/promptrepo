@@ -7,7 +7,12 @@ export default async function CategoriesPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold mb-8 text-gray-900 dark:text-white">Browse by Category</h1>
+      <h1
+        className="text-4xl font-bold mb-8"
+        style={{ color: 'var(--color-foreground)' }}
+      >
+        Browse by Category
+      </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {categories.map((category) => (
@@ -16,7 +21,13 @@ export default async function CategoriesPage() {
             href={`/category/${category.slug}`}
             className="block group"
           >
-            <div className="border border-border rounded-lg p-6 bg-white dark:bg-[oklch(0.16_0.01_286)] transition-colors hover:bg-gray-50 dark:hover:bg-[oklch(0.18_0.01_286)] hover:border-primary/40">
+            <div
+              className="border rounded-lg p-6 transition-colors hover:border-primary/40"
+              style={{
+                backgroundColor: 'var(--color-card)',
+                borderColor: 'var(--color-border)',
+              }}
+            >
               <div className="flex items-center gap-4 mb-3">
                 {category.icon && (
                   <div
@@ -32,16 +43,25 @@ export default async function CategoriesPage() {
                   </div>
                 )}
                 <div className="flex-1">
-                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white group-hover:text-primary transition-colors">
+                  <h2
+                    className="text-xl font-semibold group-hover:text-primary transition-colors"
+                    style={{ color: 'var(--color-card-foreground)' }}
+                  >
                     {category.name}
                   </h2>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <p
+                    className="text-sm"
+                    style={{ color: 'var(--color-muted-foreground)' }}
+                  >
                     {category.promptCount} prompts
                   </p>
                 </div>
               </div>
               {category.description && (
-                <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2">
+                <p
+                  className="text-sm line-clamp-2"
+                  style={{ color: 'var(--color-muted-foreground)' }}
+                >
                   {category.description}
                 </p>
               )}
