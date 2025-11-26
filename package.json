@@ -12,7 +12,8 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "db:ensure-prompts": "node scripts/ensure-prompts.mjs"
+    "db:ensure-prompts": "node scripts/ensure-prompts.mjs",
+    "db:import-sample": "tsx scripts/import-sample-prompts.ts"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.7.2",
