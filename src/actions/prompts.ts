@@ -7,6 +7,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { eq, sql } from "drizzle-orm";
+import { auth } from "@/lib/auth";
 
 const createPromptSchema = z.object({
     title: z.string().min(5).max(255),
@@ -19,8 +20,14 @@ const createPromptSchema = z.object({
 });
 
 export async function createPrompt(formData: FormData) {
-    // TODO: Add authentication check
-    const userId = "temp-user-id"; // Replace with actual auth
+    // Check authentication
+    const session = await auth();
+
+    if (!session?.user?.id) {
+        throw new Error("You must be logged in to create a prompt");
+    }
+
+    const userId = session.user.id;
 
     const data = {
         title: formData.get("title") as string,

@@ -3,6 +3,7 @@ import { ratings, prompts } from "@/db/schema";
 import { NextRequest, NextResponse } from "next/server";
 import { generateId } from "@/lib/utils";
 import { eq, sql } from "drizzle-orm";
+import { auth } from "@/lib/auth";
 
 type Props = {
     params: Promise<{ id: string }>;
@@ -21,9 +22,12 @@ export async function POST(request: NextRequest, { params }: Props) {
     }
 
     try {
-        // TODO: Get user ID from session or fingerprint
-        const userId = null;
-        const guestFingerprint = "temp-fingerprint"; // Replace with actual fingerprint
+        // Get user from session or use fingerprint for guests
+        const session = await auth();
+        const userId = session?.user?.id ?? null;
+
+        // For guest users, get fingerprint from request body
+        const guestFingerprint = userId ? null : (body.fingerprint || null);
 
         // Insert rating
         await db.insert(ratings).values({

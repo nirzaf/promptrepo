@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Star } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useFingerprint } from "@/hooks/use-fingerprint";
 
 type StarRatingProps = {
     promptId: string;
@@ -19,6 +20,7 @@ export function StarRating({
 }: StarRatingProps) {
     const [rating, setRating] = useState(initialRating);
     const [hover, setHover] = useState(0);
+    const { fingerprint } = useFingerprint();
 
     const handleClick = async (value: number) => {
         if (readonly) return;
@@ -29,7 +31,10 @@ export function StarRating({
             const response = await fetch(`/api/prompts/${promptId}/rate`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ score: value }),
+                body: JSON.stringify({
+                    score: value,
+                    fingerprint: fingerprint || undefined,
+                }),
             });
 
             if (response.ok) {
