@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Search, FileText, Hash, Sparkles } from "lucide-react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
 type SearchResult = {
     id: string;
@@ -74,6 +74,7 @@ export function CommandPalette() {
 
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogContent className="max-w-2xl p-0">
+                    <DialogTitle className="sr-only">Search</DialogTitle>
                     <div className="flex items-center border-b px-3">
                         <Search className="w-4 h-4 mr-2 text-muted-foreground" />
                         <input
