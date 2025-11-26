@@ -19,8 +19,61 @@
   }
 }
 
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.md-content {
+  line-height: 1.7;
+}
+.md-content h1 {
+  font-size: 2.25rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+}
+.md-content h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-top: 2rem;
+}
+.md-content h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 1.25rem;
+}
+.md-content p {
+  color: var(--foreground);
+}
+.md-content pre {
+  background: color-mix(in oklab, var(--foreground) 7%, var(--background));
+  border: 1px solid color-mix(in oklab, var(--foreground) 15%, var(--background));
+  border-radius: 0.75rem;
+  padding: 1rem;
+  overflow-x: auto;
+}
+.md-content code {
+  background: color-mix(in oklab, var(--foreground) 7%, var(--background));
+  border-radius: 0.25rem;
+  padding: 0.1rem 0.3rem;
+}
+.md-content table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.95rem;
+}
+.md-content th,
+.md-content td {
+  border: 1px solid color-mix(in oklab, var(--foreground) 15%, var(--background));
+  padding: 0.5rem 0.75rem;
+}
+.md-content th {
+  background: color-mix(in oklab, var(--foreground) 10%, var(--background));
+  text-align: left;
 }
