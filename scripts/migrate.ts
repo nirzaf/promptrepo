@@ -1,20 +1,27 @@
 import { drizzle } from "drizzle-orm/mysql2";
 import mysql from "mysql2/promise";
 import { migrate } from "drizzle-orm/mysql2/migrator";
+import * as dotenv from "dotenv";
+import * as path from "path";
 
-import * as schema from "../src/db/schema/index";
+// Load environment variables
+dotenv.config({ path: path.resolve(process.cwd(), ".env.local") });
 
 async function runMigrations() {
     console.log("🔄 Connecting to database...");
 
+    if (!process.env.DATABASE_URL) {
+        throw new Error("DATABASE_URL is not defined in environment variables");
+    }
+
     const connection = await mysql.createConnection({
-        uri: process.env.DATABASE_URL!,
+        uri: process.env.DATABASE_URL,
         ssl: {
             rejectUnauthorized: true,
         },
     });
 
-    const db = drizzle(connection, { schema, mode: "default" });
+    const db = drizzle(connection);
 
     console.log("🚀 Running migrations...");
 

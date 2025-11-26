@@ -60,7 +60,6 @@ export const prompts = mysqlTable(
         slugIdx: uniqueIndex("slug_idx").on(table.slug),
         userIdIdx: index("userId_idx").on(table.userId),
         categoryIdIdx: index("categoryId_idx").on(table.categoryId),
-        searchIdx: index("search_idx").on(table.title, table.description), // Fulltext index needs specific handling in Drizzle/MySQL usually via sql`` but standard index for now
     })
 );
 

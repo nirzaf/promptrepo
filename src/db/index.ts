@@ -4,11 +4,15 @@ import mysql from "mysql2/promise";
 import { env } from "@/env";
 import * as schema from "./schema";
 
-const connection = await mysql.createConnection({
-    uri: env.DATABASE_URL,
-    ssl: {
-        rejectUnauthorized: true,
-    },
-});
+export function getDb() {
+    const connection = mysql.createPool({
+        uri: env.DATABASE_URL,
+        ssl: {
+            rejectUnauthorized: true,
+        },
+    });
 
-export const db = drizzle(connection, { schema, mode: "default" });
+    return drizzle(connection, { schema, mode: "default" });
+}
+
+export const db = getDb();
