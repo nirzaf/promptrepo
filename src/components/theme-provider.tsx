@@ -28,13 +28,25 @@ export function ThemeProvider({
     storageKey = "promptvault-theme",
     ...props
 }: ThemeProviderProps) {
-    const [theme, setTheme] = useState<Theme>(
-        () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
-    );
+    const [theme, setTheme] = useState<Theme>(defaultTheme);
+    const [mounted, setMounted] = useState(false);
 
+    // Load theme from localStorage after mount
     useEffect(() => {
-        const root = window.document.documentElement;
+        setMounted(true);
+        if (typeof window !== "undefined") {
+            const stored = localStorage.getItem(storageKey) as Theme;
+            if (stored) {
+                setTheme(stored);
+            }
+        }
+    }, [storageKey]);
 
+    // Apply theme to document
+    useEffect(() => {
+        if (!mounted) return;
+
+        const root = window.document.documentElement;
         root.classList.remove("light", "dark");
 
         if (theme === "system") {
@@ -48,15 +60,22 @@ export function ThemeProvider({
         }
 
         root.classList.add(theme);
-    }, [theme]);
+    }, [theme, mounted]);
 
     const value = {
         theme,
         setTheme: (theme: Theme) => {
-            localStorage.setItem(storageKey, theme);
+            if (typeof window !== "undefined") {
+                localStorage.setItem(storageKey, theme);
+            }
             setTheme(theme);
         },
     };
+
+    // Prevent flash of unstyled content
+    if (!mounted) {
+        return <>{children}</>;
+    }
 
     return (
         <ThemeProviderContext.Provider {...props} value={value}>
