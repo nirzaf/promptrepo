@@ -31,7 +31,7 @@ export default function RequirementsClient() {
   }
 
   if (error) {
-    return <p className="text-red-600 dark:text-red-400">{error}</p>
+    return <p className="text-destructive">{error}</p>
   }
 
   const html = marked.parse(md)

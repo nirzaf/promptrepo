@@ -11,13 +11,15 @@ export default async function HomePage() {
   ]);
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Hero Section */}
-      <section className="text-center py-16">
-        <h1 className="text-5xl font-bold mb-4">Discover Amazing AI Prompts</h1>
+    <div className="container mx-auto px-4 py-10">
+      <section className="relative text-center py-20">
+        <h1 className="text-6xl font-extrabold mb-5 tracking-tight">
+          <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            Discover Powerful AI Prompts
+          </span>
+        </h1>
         <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-          Browse, share, and collaborate on the best prompts for ChatGPT,
-          Claude, Gemini, and more
+          Browse, share, and collaborate on exceptional prompts for ChatGPT, Claude, Gemini, and more.
         </p>
         <div className="flex gap-4 justify-center">
           <Button size="lg" asChild>

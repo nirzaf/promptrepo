@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { Star, Copy, Eye } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Card } from "@/components/ui/card";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 type PromptCardProps = {
     prompt: {
@@ -32,11 +35,8 @@ export function PromptCard({ prompt }: PromptCardProps) {
     const ratingCount = prompt.ratingCount || 0;
 
     return (
-        <Link
-            href={`/prompt/${prompt.slug}`}
-            className="block group"
-        >
-            <div className="border rounded-lg p-6 bg-card text-card-foreground transition-colors hover:bg-card/90 hover:border-primary/60">
+        <Link href={`/prompt/${prompt.slug}`} className="block group">
+            <Card className="p-6 backdrop-blur-[2px] hover:bg-card/92 hover:shadow-2xl hover:-translate-y-0.5 hover:scale-[1.01] ring-1 ring-border/60 hover:ring-primary/50">
                 {/* Category Badge */}
                 {prompt.category && (
                     <div className="mb-3">
@@ -55,15 +55,17 @@ export function PromptCard({ prompt }: PromptCardProps) {
                 )}
 
                 {/* Title */}
-                <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors line-clamp-2">
+                <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors line-clamp-2 drop-shadow-[0_1px_8px_rgba(255,255,255,0.06)]">
                     {prompt.title}
                 </h3>
 
                 {/* Description */}
                 {prompt.description && (
-                    <p className="text-foreground mb-4 line-clamp-2">
-                        {prompt.description}
-                    </p>
+                    <div className="text-card-foreground/80 mb-4 line-clamp-2 drop-shadow-[0_1px_6px_rgba(255,255,255,0.05)] prose prose-sm prose-invert max-w-none">
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                            {prompt.description}
+                        </ReactMarkdown>
+                    </div>
                 )}
 
                 {/* Stats */}
@@ -100,7 +102,7 @@ export function PromptCard({ prompt }: PromptCardProps) {
                         </span>
                     </div>
                 )}
-            </div>
+            </Card>
         </Link>
     );
 }

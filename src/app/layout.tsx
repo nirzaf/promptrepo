@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { SITE_CONFIG } from "@/config/site";
 import { Navbar } from "@/components/layout/navbar";
+import { Footer } from "@/components/layout/footer";
 import { ThemeProvider } from "@/components/theme-provider";
 
 const geistSans = Geist({
@@ -63,8 +64,16 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider defaultTheme="system" storageKey="promptvault-theme">
-          <Navbar />
-          {children}
+          <div className="flex flex-col min-h-screen">
+            <Navbar />
+            <main className="flex-1 relative">
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--color-accent)/15_0%,transparent_50%)]" />
+              <div className="relative">
+                {children}
+              </div>
+            </main>
+            <Footer />
+          </div>
         </ThemeProvider>
       </body>
     </html>
