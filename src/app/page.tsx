@@ -23,7 +23,7 @@ export default async function HomePage() {
           <Button size="lg" asChild>
             <Link href="/explore">Explore Prompts</Link>
           </Button>
-          <Button size="lg" variant="outline" asChild>
+          <Button size="lg" variant="outline" asChild className="text-foreground font-semibold">
             <Link href="/dashboard/prompts/new">Submit a Prompt</Link>
           </Button>
         </div>
