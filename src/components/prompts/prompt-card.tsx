@@ -36,7 +36,7 @@ export function PromptCard({ prompt }: PromptCardProps) {
             href={`/prompt/${prompt.slug}`}
             className="block group"
         >
-            <div className="border rounded-lg p-6 bg-card transition-colors hover:bg-card/90 hover:border-primary/40">
+            <div className="border rounded-lg p-6 bg-card text-card-foreground transition-colors hover:bg-card/90 hover:border-primary/60">
                 {/* Category Badge */}
                 {prompt.category && (
                     <div className="mb-3">
@@ -44,9 +44,9 @@ export function PromptCard({ prompt }: PromptCardProps) {
                             className="inline-block px-3 py-1 rounded-full text-xs font-medium"
                             style={{
                                 backgroundColor: prompt.category.color
-                                    ? `${prompt.category.color}33`
+                                    ? `${prompt.category.color}55`
                                     : "var(--color-muted)",
-                                color: prompt.category.color || "var(--color-foreground)",
+                                color: "var(--color-card-foreground)",
                             }}
                         >
                             {prompt.category.name}
@@ -61,7 +61,7 @@ export function PromptCard({ prompt }: PromptCardProps) {
 
                 {/* Description */}
                 {prompt.description && (
-                    <p className="text-muted-foreground mb-4 line-clamp-2">
+                    <p className="text-foreground mb-4 line-clamp-2">
                         {prompt.description}
                     </p>
                 )}
