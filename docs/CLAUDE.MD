@@ -1,5 +1,9 @@
 # PromptVault - AI Prompts Repository
 
+This document has been consolidated into the [Project Documentation Guide](./PROJECT-GUIDE.md).
+
+The original version is preserved under `docs/_archived_sources/CLAUDE.MD`.
+
 ## Project Overview
 
 **PromptVault** is a Next.js 15 application for sharing and discovering AI prompts. It's a community-driven platform where users can browse, create, rate, and share prompts across different categories.
@@ -198,27 +202,3 @@ Validated via T3 Env in `src/env.ts`.
 - **Type-safe**: Strict TypeScript, Zod validation, Drizzle ORM
 - **Developer-friendly**: Biome for fast linting, clear project structure
 - **Scalable**: MySQL 8.0, Redis caching, optimized queries
-
-### Key Patterns
-
-- Server Components for data fetching
-- Server Actions for mutations
-- Client Components for interactivity
-- Edge-ready API routes
-- Fingerprint-based guest tracking for anonymous interactions
-
-## Recent Changes
-
-Based on recent commits:
-
-- Added `import-sample-prompts` script and `db:import-sample` command
-- Refactored to use CSS variables for category page styling
-- Implemented guest prompt rating via browser fingerprinting
-- Enforced authentication for prompt creation
-- Implemented dark mode styling with forced dynamic rendering for category/explore pages
-- Removed Prisma dependencies (migrated to Drizzle)
-
-## Additional Resources
-
-- **Requirements**: See `requirements.md` for detailed architectural plan and feature specifications
-- **Deployment**: Designed for Vercel deployment (seamless Next.js integration)
