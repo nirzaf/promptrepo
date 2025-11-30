@@ -13,12 +13,29 @@ type SearchResult = {
     type: "prompt" | "category" | "tag";
 };
 
+const PLACEHOLDER_TEXTS = [
+    "Find me a marketing strategy...",
+    "Help me debug React code...",
+    "I need a prompt to write Python tests...",
+    "Show me email templates...",
+    "Search for data analysis prompts...",
+];
+
 export function CommandPalette() {
     const [open, setOpen] = useState(false);
     const [query, setQuery] = useState("");
     const [results, setResults] = useState<SearchResult[]>([]);
     const [loading, setLoading] = useState(false);
+    const [placeholderIndex, setPlaceholderIndex] = useState(0);
     const router = useRouter();
+
+    // Cycle through placeholders
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setPlaceholderIndex((prev) => (prev + 1) % PLACEHOLDER_TEXTS.length);
+        }, 3000);
+        return () => clearInterval(interval);
+    }, []);
 
     useEffect(() => {
         const down = (e: KeyboardEvent) => {
@@ -63,32 +80,33 @@ export function CommandPalette() {
         <>
             <button
                 onClick={() => setOpen(true)}
-                className="flex items-center gap-2 px-4 py-2 text-sm text-muted-foreground border rounded-md hover:bg-accent transition-colors w-full md:w-64"
+                className="flex items-center gap-2 px-4 py-2 text-sm text-muted-foreground border rounded-md hover:bg-accent transition-all w-full md:w-64 glass"
             >
                 <Search className="w-4 h-4" />
                 <span>Search prompts...</span>
                 <kbd className="ml-auto pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
-                    <span className="text-xs">Cmd</span>K
+                    <span className="text-xs">⌘</span>K
                 </kbd>
             </button>
 
             <Dialog open={open} onOpenChange={setOpen}>
-                <DialogContent className="max-w-2xl p-0">
+                <DialogContent className="max-w-2xl p-0 glass">
                     <DialogTitle className="sr-only">Search</DialogTitle>
                     <div className="flex items-center border-b px-3">
                         <Search className="w-4 h-4 mr-2 text-muted-foreground" />
                         <input
                             className="flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
-                            placeholder="Search prompts, categories, tags..."
+                            placeholder={PLACEHOLDER_TEXTS[placeholderIndex]}
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
+                            autoFocus
                         />
                     </div>
 
                     <div className="max-h-[300px] overflow-y-auto p-2">
                         {loading && (
                             <div className="py-6 text-center text-sm text-muted-foreground">
-                                Searching...
+                                <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
                             </div>
                         )}
 
@@ -104,19 +122,19 @@ export function CommandPalette() {
                                     <button
                                         key={result.id}
                                         onClick={() => handleSelect(result.document)}
-                                        className="flex items-center gap-3 w-full px-3 py-2 text-sm rounded-md hover:bg-accent transition-colors text-left"
+                                        className="flex items-center gap-3 w-full px-3 py-2 text-sm rounded-md hover:bg-accent transition-all text-left group"
                                     >
                                         {result.document.type === "prompt" && (
-                                            <FileText className="w-4 h-4 text-muted-foreground" />
+                                            <FileText className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
                                         )}
                                         {result.document.type === "category" && (
-                                            <Sparkles className="w-4 h-4 text-muted-foreground" />
+                                            <Sparkles className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
                                         )}
                                         {result.document.type === "tag" && (
-                                            <Hash className="w-4 h-4 text-muted-foreground" />
+                                            <Hash className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
                                         )}
                                         <div className="flex-1">
-                                            <div className="font-medium">{result.document.title}</div>
+                                            <div className="font-medium group-hover:text-primary transition-colors">{result.document.title}</div>
                                             {result.document.description && (
                                                 <div className="text-xs text-muted-foreground line-clamp-1">
                                                     {result.document.description}
