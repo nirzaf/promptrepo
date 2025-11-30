@@ -6,6 +6,7 @@ import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { ThemeProvider } from "@/components/theme-provider";
 import { AnimatedBackground } from "@/components/ui/animated-background";
+import { CommandPalette } from "@/components/search/command-palette";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -82,6 +83,8 @@ export default function RootLayout({
             </main>
             <Footer />
           </div>
+          {/* Global Command Palette - Accessible via Cmd+K */}
+          <CommandPalette />
         </ThemeProvider>
       </body>
     </html>

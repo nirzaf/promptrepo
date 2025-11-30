@@ -91,6 +91,11 @@ export function ExploreClient({
         if (model) params.set("aiModel", model);
 
         const response = await fetch(`/api/prompts/search?${params.toString()}`);
+
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status}`);
+        }
+
         const data = await response.json();
         setPrompts(data.prompts || []);
         setCurrentPage(1);
@@ -107,11 +112,13 @@ export function ExploreClient({
         window.history.replaceState(null, "", newUrl);
       } catch (error) {
         console.error("Error fetching prompts:", error);
+        // On error, keep the current prompts or show empty state
+        setPrompts([]);
       } finally {
         setLoading(false);
       }
     },
-    [router]
+    []
   );
 
   // Debounced search

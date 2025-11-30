@@ -2,28 +2,36 @@ import { searchPrompts } from "@/db/queries/search-queries";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
-    const searchParams = request.nextUrl.searchParams;
-    const query = searchParams.get("q") || "";
-    const categorySlug = searchParams.get("category") || undefined;
-    const aiModelSlug = searchParams.get("aiModel") || undefined;
+    try {
+        const searchParams = request.nextUrl.searchParams;
+        const query = searchParams.get("q") || "";
+        const categorySlug = searchParams.get("category") || undefined;
+        const aiModelSlug = searchParams.get("aiModel") || undefined;
 
-    const results = await searchPrompts(query, {
-        categorySlug,
-        aiModelSlug,
-        limit: 20,
-    });
+        const results = await searchPrompts(query, {
+            categorySlug,
+            aiModelSlug,
+            limit: 20,
+        });
 
-    // Format results for command palette
-    const formattedResults = results.map((result) => ({
-        id: result.id,
-        document: {
+        // Format results for command palette
+        const formattedResults = results.map((result) => ({
             id: result.id,
-            title: result.title,
-            slug: result.slug,
-            description: result.description,
-            type: "prompt" as const,
-        },
-    }));
+            document: {
+                id: result.id,
+                title: result.title,
+                slug: result.slug,
+                description: result.description,
+                type: "prompt" as const,
+            },
+        }));
 
-    return NextResponse.json({ results: { hits: formattedResults } });
+        return NextResponse.json({ results: { hits: formattedResults } });
+    } catch (error) {
+        console.error("Command palette search error:", error);
+        return NextResponse.json(
+            { results: { hits: [] }, error: "Failed to search prompts" },
+            { status: 500 }
+        );
+    }
 }

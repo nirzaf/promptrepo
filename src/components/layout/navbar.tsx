@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { CommandPalette } from "@/components/search/command-palette";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 export function Navbar() {
@@ -14,13 +13,8 @@ export function Navbar() {
                         </span>
                     </Link>
 
-                    {/* Center Search Bar */}
-                    <div className="flex-1 max-w-2xl mx-auto">
-                        <CommandPalette />
-                    </div>
-
                     {/* Right Navigation */}
-                    <div className="hidden md:flex items-center gap-6 shrink-0">
+                    <div className="flex items-center gap-6 shrink-0">
                         <Link
                             href="/explore"
                             className="text-sm font-medium hover:text-primary transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-primary after:transition-all hover:after:w-full whitespace-nowrap"
