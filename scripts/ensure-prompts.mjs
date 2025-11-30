@@ -46,7 +46,7 @@ async function ensure() {
     )`)
     await conn.query("CREATE INDEX `userId_idx` ON `prompts` (`userId`)")
     await conn.query("CREATE INDEX `categoryId_idx` ON `prompts` (`categoryId`)")
-    await conn.query("CREATE INDEX `search_idx` ON `prompts` (`title`,`description`)")
+    await conn.query("CREATE INDEX `search_idx` ON `prompts` (`title`,`description`(255))")
     console.log('Created prompts table and indexes')
   } else {
     console.log('prompts table already exists')

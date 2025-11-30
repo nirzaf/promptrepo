@@ -221,7 +221,7 @@ CREATE INDEX `tag_idx` ON `prompt_tags` (`tagId`);--> statement-breakpoint
 CREATE INDEX `promptId_idx` ON `prompt_versions` (`promptId`);--> statement-breakpoint
 CREATE INDEX `userId_idx` ON `prompts` (`userId`);--> statement-breakpoint
 CREATE INDEX `categoryId_idx` ON `prompts` (`categoryId`);--> statement-breakpoint
-CREATE INDEX `search_idx` ON `prompts` (`title`,`description`);--> statement-breakpoint
+CREATE INDEX `search_idx` ON `prompts` (`title`,`description`(255));--> statement-breakpoint
 CREATE INDEX `userId_idx` ON `bookmarks` (`userId`);--> statement-breakpoint
 CREATE INDEX `prompt_idx` ON `collection_prompts` (`promptId`);--> statement-breakpoint
 CREATE INDEX `userId_idx` ON `collections` (`userId`);--> statement-breakpoint
