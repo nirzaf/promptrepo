@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
+import type { Route } from "next";
 import { Search, FileText, Hash, Sparkles, Loader2 } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
@@ -12,6 +13,8 @@ type SearchResult = {
     description: string | null;
     type: "prompt" | "category" | "tag";
 };
+
+type SearchHit = SearchResult | { id: string; document: SearchResult };
 
 const PLACEHOLDER_TEXTS = [
     "Find me a marketing strategy...",
@@ -24,12 +27,12 @@ const PLACEHOLDER_TEXTS = [
 export function CommandPalette() {
     const [open, setOpen] = useState(false);
     const [query, setQuery] = useState("");
-    const [results, setResults] = useState<SearchResult[]>([]);
+    const [results, setResults] = useState<SearchHit[]>([]);
     const [loading, setLoading] = useState(false);
     const [placeholderIndex, setPlaceholderIndex] = useState(0);
     const router = useRouter();
-    const debounceTimeout = useRef<NodeJS.Timeout>();
-    const abortController = useRef<AbortController>();
+    const debounceTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const abortController = useRef<AbortController | null>(null);
 
     // Cycle through placeholders
     useEffect(() => {
@@ -106,11 +109,11 @@ export function CommandPalette() {
         setQuery("");
 
         if (result.type === "prompt") {
-            router.push(`/prompt/${result.slug}`);
+            router.push((`/prompt/${result.slug}`) as Route);
         } else if (result.type === "category") {
-            router.push(`/category/${result.slug}`);
+            router.push((`/category/${result.slug}`) as Route);
         } else if (result.type === "tag") {
-            router.push(`/tag/${result.slug}`);
+            router.push((`/tag/${result.slug}`) as Route);
         }
     };
 
@@ -184,25 +187,28 @@ export function CommandPalette() {
                         {/* Results */}
                         {!loading && results.length > 0 && (
                             <div className="space-y-1">
-                                {results.map((result: { id: string; document: SearchResult }) => (
+                                {results.map((result) => {
+                                    const doc = (result as any).document ?? (result as any);
+                                    const key = (result as any).id ?? doc.slug;
+                                    return (
                                     <button
-                                        key={result.id}
+                                        key={key}
                                         type="button"
-                                        onClick={() => handleSelect(result.document)}
+                                        onClick={() => handleSelect(doc)}
                                         className="flex items-start gap-3 w-full px-4 py-3 text-sm rounded-lg hover:bg-accent/50 transition-all text-left group border border-transparent hover:border-primary/20"
                                     >
                                         <div className="mt-0.5 shrink-0">
-                                            {result.document.type === "prompt" && (
+                                            {doc.type === "prompt" && (
                                                 <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
                                                     <FileText className="w-4 h-4 text-primary" />
                                                 </div>
                                             )}
-                                            {result.document.type === "category" && (
+                                            {doc.type === "category" && (
                                                 <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center group-hover:bg-accent/20 transition-colors">
                                                     <Sparkles className="w-4 h-4 text-accent-foreground" />
                                                 </div>
                                             )}
-                                            {result.document.type === "tag" && (
+                                            {doc.type === "tag" && (
                                                 <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center group-hover:bg-muted/80 transition-colors">
                                                     <Hash className="w-4 h-4 text-muted-foreground" />
                                                 </div>
@@ -210,16 +216,17 @@ export function CommandPalette() {
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <div className="font-semibold text-foreground group-hover:text-primary transition-colors mb-1">
-                                                {result.document.title}
+                                                {doc.title}
                                             </div>
-                                            {result.document.description && (
+                                            {doc.description && (
                                                 <div className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
-                                                    {result.document.description}
+                                                    {doc.description}
                                                 </div>
                                             )}
                                         </div>
                                     </button>
-                                ))}
+                                    );
+                                })}
                             </div>
                         )}
                     </div>
