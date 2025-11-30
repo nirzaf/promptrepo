@@ -5,6 +5,7 @@ import { SITE_CONFIG } from "@/config/site";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { ThemeProvider } from "@/components/theme-provider";
+import { AnimatedBackground } from "@/components/ui/animated-background";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -66,10 +67,11 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "(()=>{try{var k='promptvault-theme';var s=localStorage.getItem(k);var m=window.matchMedia('(prefers-color-scheme: dark)').matches;var t=s&&s!=='system'?s:(m?'dark':'light');var r=document.documentElement;r.classList.remove('light','dark');r.classList.add(t);}catch(e){}})();",
+              "(()=>{try{var k='promptvault-theme';var s=localStorage.getItem(k);var m=window.matchMedia('(prefers-color-scheme: dark)').matches;var t=s&&s!=='system'?s:(m?'dark':'light');var r=document.documentElement;r.classList.remove('light','dark','high-contrast');r.classList.add(t);}catch(e){}})();",
           }}
         />
         <ThemeProvider defaultTheme="system" storageKey="promptvault-theme">
+          <AnimatedBackground />
           <div className="flex flex-col min-h-screen">
             <Navbar />
             <main className="flex-1 relative">
