@@ -4,12 +4,12 @@ import {
   getCategories,
   getAIModels,
 } from "@/db/queries/prompts";
-import { PromptCard } from "@/components/prompts/prompt-card";
+import { ExploreClient } from "@/components/explore/explore-client";
 import * as Icons from "lucide-react";
 
 export default async function ExplorePage() {
   const [prompts, categories, aiModels] = await Promise.all([
-    getPublicPrompts(24, 0, "rating"),
+    getPublicPrompts(100, 0, "rating"), // Fetch more prompts for pagination
     getCategories(),
     getAIModels(),
   ]);
@@ -60,17 +60,8 @@ export default async function ExplorePage() {
         </div>
       </div>
 
-      {/* Prompts Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 auto-rows-fr">
-        {prompts.map((prompt, index) => (
-          <div key={prompt.id} className="stagger-item" style={{ animationDelay: `${index * 0.03}s` }}>
-            <PromptCard prompt={prompt} />
-          </div>
-        ))}
-      </div>
-
-      {/* Empty State */}
-      {prompts.length === 0 && (
+      {/* Prompts Grid with Pagination */}
+      {prompts.length === 0 ? (
         <div className="text-center py-20">
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-muted mb-4">
             <Icons.SearchX className="w-10 h-10 text-muted-foreground" />
@@ -80,6 +71,8 @@ export default async function ExplorePage() {
             Try adjusting your filters or check back later
           </p>
         </div>
+      ) : (
+        <ExploreClient prompts={prompts} itemsPerPage={12} />
       )}
     </div>
   );
