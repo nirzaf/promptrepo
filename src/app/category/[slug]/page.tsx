@@ -51,9 +51,11 @@ export default async function CategoryPage({ params }: Props) {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {categoryPrompts.map((prompt) => (
-            <PromptCard key={prompt.id} prompt={prompt} />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
+          {categoryPrompts.map((prompt, index) => (
+            <div key={prompt.id} className="stagger-item" style={{ animationDelay: `${index * 0.05}s` }}>
+              <PromptCard prompt={prompt} />
+            </div>
           ))}
         </div>
       )}

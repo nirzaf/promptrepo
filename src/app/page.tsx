@@ -41,7 +41,7 @@ export default async function HomePage() {
               <Link href="/explore?sort=trending">View All</Link>
             </Button>
           </div>
-          <SpotlightGrid className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <SpotlightGrid className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
             {trendingPrompts.map((prompt, index) => (
               <div key={prompt.id} className="stagger-item" style={{ animationDelay: `${index * 0.1}s` }}>
                 <PromptCard prompt={prompt} />
@@ -59,7 +59,7 @@ export default async function HomePage() {
             <Link href="/explore">View All</Link>
           </Button>
         </div>
-        <SpotlightGrid className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <SpotlightGrid className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
           {recentPrompts.map((prompt, index) => (
             <div key={prompt.id} className="stagger-item" style={{ animationDelay: `${index * 0.1}s` }}>
               <PromptCard prompt={prompt} />

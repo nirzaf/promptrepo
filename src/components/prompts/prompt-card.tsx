@@ -55,8 +55,8 @@ export function PromptCard({ prompt }: PromptCardProps) {
     };
 
     return (
-        <Link href={`/prompt/${prompt.slug}`} className="block group">
-            <Card className="relative p-6 glass gradient-border card-interactive transition-all duration-300 will-change-transform">
+        <Link href={`/prompt/${prompt.slug}`} className="block group h-full">
+            <Card className="relative p-6 glass gradient-border card-interactive transition-all duration-300 will-change-transform h-full flex flex-col">
                 {/* Quick Copy Button */}
                 <button
                     type="button"
@@ -120,78 +120,83 @@ export function PromptCard({ prompt }: PromptCardProps) {
                     )}
                 </button>
 
-                {/* Category Badge */}
-                {prompt.category && (
-                    <div className="mb-3">
-                        <span
-                            className="inline-block px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm"
-                            style={{
-                                backgroundColor: prompt.category.color
-                                    ? `${prompt.category.color}55`
-                                    : "var(--color-muted)",
-                                color: "var(--color-card-foreground)",
-                                border: `1px solid ${prompt.category.color || 'var(--color-border)'}40`,
-                            }}
-                        >
-                            {prompt.category.name}
-                        </span>
-                    </div>
-                )}
-
-                {/* Title */}
-                <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors line-clamp-2 drop-shadow-[0_1px_8px_rgba(255,255,255,0.06)]">
-                    {prompt.title}
-                </h3>
-
-                {/* Description */}
-                {prompt.description && (
-                    <div className="text-card-foreground/80 mb-4 line-clamp-2 drop-shadow-[0_1px_6px_rgba(255,255,255,0.05)] prose prose-sm max-w-none">
-                        {/* @ts-expect-error remark-gfm type mismatch */}
-                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                            {prompt.description}
-                        </ReactMarkdown>
-                    </div>
-                )}
-
-                {/* Stats */}
-                <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
-                    <div className="flex items-center gap-1 transition-colors hover:text-foreground">
-                        <Eye className="w-4 h-4" />
-                        <span>{viewCount}</span>
-                    </div>
-                    <div className="flex items-center gap-1 transition-colors hover:text-foreground">
-                        <Copy className="w-4 h-4" />
-                        <span>{copyCount}</span>
-                    </div>
-                    {ratingCount > 0 && (
-                        <div className="flex items-center gap-1 transition-colors hover:text-foreground">
-                            <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                            <span>{rating.toFixed(1)}</span>
-                            <span className="text-xs">({ratingCount})</span>
+                {/* Main Content - Flex Grow to Fill Space */}
+                <div className="flex flex-col flex-1">
+                    {/* Category Badge */}
+                    {prompt.category && (
+                        <div className="mb-3">
+                            <span
+                                className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm ring-1"
+                                style={{
+                                    backgroundColor: prompt.category.color
+                                        ? `${prompt.category.color}22`
+                                        : "var(--color-muted)",
+                                    color: prompt.category.color || "var(--color-card-foreground)",
+                                    borderColor: `${prompt.category.color || 'var(--color-border)'}60`,
+                                }}
+                            >
+                                {prompt.category.name}
+                            </span>
                         </div>
                     )}
-                </div>
 
-                {/* Author */}
-                <div className="flex items-center gap-2 text-sm">
-                    {prompt.user ? (
-                        <>
-                            {prompt.user.image && (
-                                <img
-                                    src={prompt.user.image}
-                                    alt={prompt.user.name || "User"}
-                                    className="w-6 h-6 rounded-full ring-2 ring-primary/20 transition-all group-hover:ring-primary/40"
-                                />
-                            )}
-                            <span className="text-muted-foreground transition-colors group-hover:text-foreground">
-                                by {prompt.user.name || prompt.user.username || "Anonymous"}
+                    {/* Title */}
+                    <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors line-clamp-2 leading-tight">
+                        {prompt.title}
+                    </h3>
+
+                    {/* Description */}
+                    <div className="flex-1 mb-4">
+                        {prompt.description && (
+                            <div className="text-card-foreground/70 line-clamp-3 text-sm leading-relaxed prose prose-sm max-w-none">
+                                {/* @ts-expect-error remark-gfm type mismatch */}
+                                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                    {prompt.description}
+                                </ReactMarkdown>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Stats */}
+                    <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4 pb-4 border-b border-border/40">
+                        <div className="flex items-center gap-1.5 transition-colors hover:text-foreground">
+                            <Eye className="w-4 h-4" />
+                            <span className="font-medium">{viewCount}</span>
+                        </div>
+                        <div className="flex items-center gap-1.5 transition-colors hover:text-foreground">
+                            <Copy className="w-4 h-4" />
+                            <span className="font-medium">{copyCount}</span>
+                        </div>
+                        {ratingCount > 0 && (
+                            <div className="flex items-center gap-1.5 transition-colors hover:text-foreground ml-auto">
+                                <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                                <span className="font-medium">{rating.toFixed(1)}</span>
+                                <span className="text-xs opacity-70">({ratingCount})</span>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Author - Always at Bottom */}
+                    <div className="flex items-center gap-2 text-sm mt-auto">
+                        {prompt.user ? (
+                            <>
+                                {prompt.user.image && (
+                                    <img
+                                        src={prompt.user.image}
+                                        alt={prompt.user.name || "User"}
+                                        className="w-7 h-7 rounded-full ring-2 ring-primary/20 transition-all group-hover:ring-primary/40"
+                                    />
+                                )}
+                                <span className="text-muted-foreground transition-colors group-hover:text-foreground font-medium">
+                                    by {prompt.user.name || prompt.user.username || "Anonymous"}
+                                </span>
+                            </>
+                        ) : (
+                            <span className="text-muted-foreground italic">
+                                by System
                             </span>
-                        </>
-                    ) : (
-                        <span className="text-muted-foreground italic">
-                            by General User
-                        </span>
-                    )}
+                        )}
+                    </div>
                 </div>
             </Card>
         </Link>
