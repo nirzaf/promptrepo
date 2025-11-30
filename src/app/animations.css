@@ -124,6 +124,31 @@
     }
 }
 
+/* Bounce Subtle */
+@keyframes bounce-subtle {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-4px);
+    }
+}
+
+/* Scale In Pop */
+@keyframes scale-in-pop {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
 /* Slide Up */
 @keyframes slide-up {
     from {
@@ -340,6 +365,15 @@
 
 .stagger-item:nth-child(6) {
     animation-delay: 0.6s;
+}
+
+/* Animation Utilities */
+.animate-bounce-subtle {
+    animation: bounce-subtle 0.6s ease-in-out;
+}
+
+.animate-scale-in {
+    animation: scale-in-pop 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Button Morphing */

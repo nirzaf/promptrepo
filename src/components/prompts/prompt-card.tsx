@@ -14,6 +14,7 @@ type PromptCardProps = {
         slug: string;
         title: string;
         description: string | null;
+        content: string | null;
         viewCount: number | null;
         copyCount: number | null;
         ratingAvg: string | null;
@@ -33,7 +34,7 @@ type PromptCardProps = {
 
 export function PromptCard({ prompt }: PromptCardProps) {
     const [copied, setCopied] = useState(false);
-    const rating = prompt.ratingAvg ? parseFloat(prompt.ratingAvg) : 0;
+    const rating = prompt.ratingAvg ? Number.parseFloat(prompt.ratingAvg) : 0;
     const viewCount = prompt.viewCount || 0;
     const copyCount = prompt.copyCount || 0;
     const ratingCount = prompt.ratingCount || 0;
@@ -43,9 +44,9 @@ export function PromptCard({ prompt }: PromptCardProps) {
         e.stopPropagation();
 
         try {
-            // In a real implementation, you'd fetch the full prompt content
-            // For now, we'll just copy the title as a placeholder
-            await navigator.clipboard.writeText(prompt.title);
+            // Copy the actual prompt content if available, otherwise fall back to title
+            const textToCopy = prompt.content || prompt.title;
+            await navigator.clipboard.writeText(textToCopy);
             setCopied(true);
             setTimeout(() => setCopied(false), 2000);
         } catch (error) {
@@ -58,19 +59,65 @@ export function PromptCard({ prompt }: PromptCardProps) {
             <Card className="relative p-6 glass gradient-border card-interactive transition-all duration-300 will-change-transform">
                 {/* Quick Copy Button */}
                 <button
+                    type="button"
                     onClick={handleQuickCopy}
                     className={cn(
-                        "absolute top-4 right-4 p-2 rounded-lg transition-all duration-300 z-10",
+                        "absolute top-4 right-4 p-3 rounded-xl transition-all duration-300 z-10",
                         "opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0",
-                        "bg-primary/10 hover:bg-primary/20 backdrop-blur-sm border border-primary/20",
-                        copied && "bg-green-500/20 border-green-500/40"
+                        "backdrop-blur-md border-2",
+                        "shadow-lg hover:shadow-xl",
+                        "active:scale-95 active:translate-y-0.5",
+                        "transform-gpu will-change-transform",
+                        copied
+                            ? "bg-linear-to-br from-green-400/30 to-green-600/30 border-green-400/60 shadow-green-500/25"
+                            : "bg-linear-to-br from-primary/20 to-primary/40 border-primary/40 hover:border-primary/60 shadow-primary/20",
+                        copied && "animate-bounce-subtle"
                     )}
+                    style={{
+                        boxShadow: copied
+                            ? "0 4px 15px rgba(34, 197, 94, 0.3), inset 0 -2px 8px rgba(0, 0, 0, 0.2), inset 0 2px 8px rgba(255, 255, 255, 0.1)"
+                            : "0 4px 15px rgba(var(--color-primary-rgb, 99, 102, 241), 0.25), inset 0 -2px 8px rgba(0, 0, 0, 0.2), inset 0 2px 8px rgba(255, 255, 255, 0.1)"
+                    }}
                     aria-label="Quick copy"
                 >
-                    <Copy className={cn(
-                        "w-4 h-4 transition-colors",
-                        copied ? "text-green-500" : "text-primary"
-                    )} />
+                    {copied ? (
+                        <div className="relative">
+                            <svg
+                                className="w-5 h-5 text-green-400 animate-scale-in"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                aria-hidden="true"
+                            >
+                                <title>Copied</title>
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2.5}
+                                    d="M5 13l4 4L19 7"
+                                />
+                            </svg>
+                            <div className="absolute inset-0 animate-ping opacity-75">
+                                <svg
+                                    className="w-5 h-5 text-green-400"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    aria-hidden="true"
+                                >
+                                    <title>Success indicator</title>
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2.5}
+                                        d="M5 13l4 4L19 7"
+                                    />
+                                </svg>
+                            </div>
+                        </div>
+                    ) : (
+                        <Copy className="w-5 h-5 text-primary transition-transform group-hover:scale-110" />
+                    )}
                 </button>
 
                 {/* Category Badge */}

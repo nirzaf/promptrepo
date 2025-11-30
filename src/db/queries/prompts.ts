@@ -107,6 +107,7 @@ export async function getTrendingPrompts(limit = 10) {
             slug: prompts.slug,
             title: prompts.title,
             description: prompts.description,
+            content: prompts.content,
             viewCount: prompts.viewCount,
             copyCount: prompts.copyCount,
             ratingAvg: prompts.ratingAvg,
