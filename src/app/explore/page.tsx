@@ -8,7 +8,7 @@ import { PromptCard } from "@/components/prompts/prompt-card";
 
 export default async function ExplorePage() {
   const [prompts, categories, aiModels] = await Promise.all([
-    getPublicPrompts(24),
+    getPublicPrompts(24, 0, "rating"),
     getCategories(),
     getAIModels(),
   ]);

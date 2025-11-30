@@ -19,7 +19,7 @@ export const prompts = mysqlTable(
     "prompts",
     {
         id: varchar("id", { length: 255 }).primaryKey(),
-        userId: varchar("userId", { length: 255 }).notNull(),
+        userId: varchar("userId", { length: 255 }),
         slug: varchar("slug", { length: 255 }).notNull().unique(),
         title: varchar("title", { length: 255 }).notNull(),
         content: text("content").notNull(),

@@ -52,6 +52,7 @@ export default async function PromptDetailPage({ params }: Props) {
         {/* Description */}
         {prompt.description && (
           <div className="text-xl text-muted-foreground mb-8 leading-relaxed prose prose-lg prose-invert max-w-none">
+            {/* @ts-expect-error remark-gfm type mismatch */}
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
               {prompt.description}
             </ReactMarkdown>
@@ -97,6 +98,7 @@ export default async function PromptDetailPage({ params }: Props) {
         </div>
         <div className="rounded-xl p-6 bg-card border border-border/50 shadow-inner">
           <div className="prose prose-invert max-w-none">
+            {/* @ts-expect-error remark-gfm type mismatch */}
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
               {prompt.content}
             </ReactMarkdown>
@@ -114,6 +116,7 @@ export default async function PromptDetailPage({ params }: Props) {
             <h2 className="text-2xl font-bold">How to Use</h2>
           </div>
           <div className="prose prose-invert max-w-none leading-relaxed">
+            {/* @ts-expect-error remark-gfm type mismatch */}
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
               {prompt.instructions}
             </ReactMarkdown>
@@ -132,6 +135,7 @@ export default async function PromptDetailPage({ params }: Props) {
           </div>
           <div className="rounded-xl p-6 bg-card border border-border/50 shadow-inner">
             <div className="prose prose-invert max-w-none">
+              {/* @ts-expect-error remark-gfm type mismatch */}
               <ReactMarkdown remarkPlugins={[remarkGfm]}>
                 {prompt.exampleOutput}
               </ReactMarkdown>

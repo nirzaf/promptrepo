@@ -22,12 +22,11 @@ const createPromptSchema = z.object({
 export async function createPrompt(formData: FormData) {
     // Check authentication
     const session = await auth();
+    const userId = session?.user?.id || null;
 
-    if (!session?.user?.id) {
-        throw new Error("You must be logged in to create a prompt");
-    }
-
-    const userId = session.user.id;
+    // if (!session?.user?.id) {
+    //     throw new Error("You must be logged in to create a prompt");
+    // }
 
     const data = {
         title: formData.get("title") as string,

@@ -2,7 +2,11 @@ import { db } from "@/db";
 import { prompts, users, categories, aiModels } from "@/db/schema";
 import { eq, desc, and, sql } from "drizzle-orm";
 
-export async function getPublicPrompts(limit = 20, offset = 0) {
+export async function getPublicPrompts(limit = 20, offset = 0, sort: "newest" | "rating" = "rating") {
+    const orderBy = sort === "rating"
+        ? [desc(prompts.ratingAvg), desc(prompts.ratingCount), desc(prompts.createdAt)]
+        : [desc(prompts.createdAt)];
+
     return await db
         .select({
             id: prompts.id,
@@ -43,7 +47,7 @@ export async function getPublicPrompts(limit = 20, offset = 0) {
                 eq(prompts.status, "published")
             )
         )
-        .orderBy(desc(prompts.createdAt))
+        .orderBy(...orderBy)
         .limit(limit)
         .offset(offset);
 }

@@ -62,6 +62,7 @@ export function PromptCard({ prompt }: PromptCardProps) {
                 {/* Description */}
                 {prompt.description && (
                     <div className="text-card-foreground/80 mb-4 line-clamp-2 drop-shadow-[0_1px_6px_rgba(255,255,255,0.05)] prose prose-sm prose-invert max-w-none">
+                        {/* @ts-expect-error remark-gfm type mismatch */}
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>
                             {prompt.description}
                         </ReactMarkdown>
@@ -88,20 +89,26 @@ export function PromptCard({ prompt }: PromptCardProps) {
                 </div>
 
                 {/* Author */}
-                {prompt.user && (
-                    <div className="flex items-center gap-2 text-sm">
-                        {prompt.user.image && (
-                            <img
-                                src={prompt.user.image}
-                                alt={prompt.user.name || "User"}
-                                className="w-6 h-6 rounded-full"
-                            />
-                        )}
-                        <span className="text-muted-foreground">
-                            by {prompt.user.name || prompt.user.username || "Anonymous"}
+                <div className="flex items-center gap-2 text-sm">
+                    {prompt.user ? (
+                        <>
+                            {prompt.user.image && (
+                                <img
+                                    src={prompt.user.image}
+                                    alt={prompt.user.name || "User"}
+                                    className="w-6 h-6 rounded-full"
+                                />
+                            )}
+                            <span className="text-muted-foreground">
+                                by {prompt.user.name || prompt.user.username || "Anonymous"}
+                            </span>
+                        </>
+                    ) : (
+                        <span className="text-muted-foreground italic">
+                            by General User
                         </span>
-                    </div>
-                )}
+                    )}
+                </div>
             </Card>
         </Link>
     );
