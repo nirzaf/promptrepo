@@ -1,4 +1,5 @@
 import NextAuth from "next-auth";
+import type { Adapter } from "next-auth/adapters";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import Credentials from "next-auth/providers/credentials";
 import { z } from "zod";
@@ -18,7 +19,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         accountsTable: accounts,
         sessionsTable: sessions,
         verificationTokensTable: verificationTokens,
-    }),
+    }) as Adapter,
     providers: [
         Credentials({
             credentials: {
@@ -36,12 +37,21 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         }),
     ],
     callbacks: {
-        session: ({ session, user }) => ({
-            ...session,
-            user: {
-                ...session.user,
-                id: user.id,
-            },
-        }),
+        session: async ({ session, user }) => {
+            // Fetch the role from the database
+            const dbUser = await db.query.users.findFirst({
+                where: (users, { eq }) => eq(users.id, user.id),
+                columns: { role: true }
+            });
+
+            return {
+                ...session,
+                user: {
+                    ...session.user,
+                    id: user.id,
+                    role: dbUser?.role || "user",
+                },
+            };
+        },
     },
 });
