@@ -8,6 +8,13 @@
       "when": 1764154322598,
       "tag": "0000_vengeful_miracleman",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1764499169944,
+      "tag": "0001_happy_whizzer",
+      "breakpoints": true
     }
   ]
 }

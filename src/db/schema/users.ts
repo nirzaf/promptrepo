@@ -18,6 +18,7 @@ export const users = mysqlTable(
         name: varchar("name", { length: 255 }),
         username: varchar("username", { length: 50 }).unique(),
         email: varchar("email", { length: 255 }).notNull(),
+        passwordHash: varchar("passwordHash", { length: 255 }),
         emailVerified: timestamp("emailVerified", { mode: "date", fsp: 3 }),
         image: varchar("image", { length: 255 }),
         role: mysqlEnum("role", ["user", "moderator", "admin"]).default("user"),

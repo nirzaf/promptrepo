@@ -28,11 +28,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             },
             authorize: async (credentials) => {
                 const { email, password } = await signInSchema.parseAsync(credentials);
-
-                // Logic to verify user against DB
-                // This is a placeholder. You need to implement actual user lookup and password comparison.
-                // For now, we return null to fail auth until implemented.
-                return null;
+                const user = await db.query.users.findFirst({
+                    where: (users, { eq }) => eq(users.email, email),
+                    columns: { id: true, email: true, name: true, passwordHash: true },
+                });
+                if (!user?.passwordHash) return null;
+                const ok = await bcrypt.compare(password, user.passwordHash);
+                if (!ok) return null;
+                return { id: user.id, email: user.email!, name: user.name ?? null } as any;
             },
         }),
     ],
