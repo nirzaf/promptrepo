@@ -142,8 +142,28 @@ export async function getTrendingPrompts(limit = 10) {
 
 export async function getCategories() {
     return await db
-        .select()
+        .select({
+            id: categories.id,
+            name: categories.name,
+            slug: categories.slug,
+            description: categories.description,
+            icon: categories.icon,
+            color: categories.color,
+            parentId: categories.parentId,
+            sortOrder: categories.sortOrder,
+            createdAt: categories.createdAt,
+            promptCount: sql<number>`CAST(COUNT(DISTINCT ${prompts.id}) AS UNSIGNED)`,
+        })
         .from(categories)
+        .leftJoin(
+            prompts,
+            and(
+                eq(prompts.categoryId, categories.id),
+                eq(prompts.visibility, "public"),
+                eq(prompts.status, "published")
+            )
+        )
+        .groupBy(categories.id)
         .orderBy(categories.sortOrder, categories.name);
 }
 
