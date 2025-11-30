@@ -63,6 +63,12 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "(()=>{try{var k='promptvault-theme';var s=localStorage.getItem(k);var m=window.matchMedia('(prefers-color-scheme: dark)').matches;var t=s&&s!=='system'?s:(m?'dark':'light');var r=document.documentElement;r.classList.remove('light','dark');r.classList.add(t);}catch(e){}})();",
+          }}
+        />
         <ThemeProvider defaultTheme="system" storageKey="promptvault-theme">
           <div className="flex flex-col min-h-screen">
             <Navbar />
