@@ -108,21 +108,22 @@ export function CommandPalette() {
         if (result.type === "prompt") {
             router.push(`/prompt/${result.slug}`);
         } else if (result.type === "category") {
-            router.push(`/category/${result.slug}` as any);
+            router.push(`/category/${result.slug}`);
         } else if (result.type === "tag") {
-            router.push(`/tag/${result.slug}` as any);
+            router.push(`/tag/${result.slug}`);
         }
     };
 
     return (
         <>
             <button
+                type="button"
                 onClick={() => setOpen(true)}
-                className="flex items-center gap-2 px-4 py-2 text-sm text-muted-foreground border-2 border-border rounded-lg hover:border-primary hover:bg-accent/50 transition-all w-full md:w-64 glass backdrop-blur-md group"
+                className="flex items-center gap-2 px-4 py-2 text-sm text-muted-foreground border-2 border-border rounded-lg hover:border-primary hover:bg-accent/50 transition-all w-full glass backdrop-blur-md group"
             >
-                <Search className="w-4 h-4 group-hover:text-primary transition-colors" />
+                <Search className="w-4 h-4 group-hover:text-primary transition-colors shrink-0" />
                 <span className="flex-1 text-left">Search prompts...</span>
-                <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+                <kbd className="hidden sm:inline-flex pointer-events-none h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100 shrink-0">
                     <span className="text-xs">⌘</span>K
                 </kbd>
             </button>
@@ -186,6 +187,7 @@ export function CommandPalette() {
                                 {results.map((result: { id: string; document: SearchResult }) => (
                                     <button
                                         key={result.id}
+                                        type="button"
                                         onClick={() => handleSelect(result.document)}
                                         className="flex items-start gap-3 w-full px-4 py-3 text-sm rounded-lg hover:bg-accent/50 transition-all text-left group border border-transparent hover:border-primary/20"
                                     >
