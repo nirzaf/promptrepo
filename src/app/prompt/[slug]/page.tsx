@@ -31,12 +31,13 @@ export default async function PromptDetailPage({ params }: Props) {
         {prompt.category && (
           <div className="mb-4">
             <span
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium backdrop-blur-sm ring-1 ring-border/50"
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium glass ring-1 ring-border/50"
               style={{
                 backgroundColor: prompt.category.color
                   ? `${prompt.category.color}25`
                   : "var(--color-muted)",
                 color: prompt.category.color || "var(--color-foreground)",
+                borderColor: `${prompt.category.color || 'var(--color-border)'}40`,
               }}
             >
               {prompt.category.name}
@@ -45,13 +46,13 @@ export default async function PromptDetailPage({ params }: Props) {
         )}
 
         {/* Title */}
-        <h1 className="text-5xl font-extrabold mb-6 tracking-tight bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-transparent">
+        <h1 className="text-5xl font-extrabold mb-6 tracking-tight text-gradient">
           {prompt.title}
         </h1>
 
         {/* Description */}
         {prompt.description && (
-          <div className="text-xl text-muted-foreground mb-8 leading-relaxed prose prose-lg prose-invert max-w-none">
+          <div className="text-xl text-muted-foreground mb-8 leading-relaxed prose prose-lg max-w-none">
             {/* @ts-expect-error remark-gfm type mismatch */}
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
               {prompt.description}
@@ -60,9 +61,9 @@ export default async function PromptDetailPage({ params }: Props) {
         )}
 
         {/* Stats & Actions */}
-        <div className="flex items-center justify-between flex-wrap gap-4 p-4 rounded-lg bg-muted/30 backdrop-blur-sm border border-border/50">
+        <div className="flex items-center justify-between flex-wrap gap-4 p-4 rounded-lg glass border border-border/50">
           <div className="flex items-center gap-6 text-sm">
-            <div className="flex items-center gap-2 text-muted-foreground">
+            <div className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground">
               <Eye className="w-5 h-5" />
               <span className="font-medium">{viewCount}</span>
               <span className="hidden sm:inline">views</span>
@@ -89,15 +90,15 @@ export default async function PromptDetailPage({ params }: Props) {
       </div>
 
       {/* Main Content */}
-      <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-8 mb-8 shadow-lg hover:shadow-xl transition-shadow">
+      <div className="glass gradient-border rounded-xl p-8 mb-8 card-interactive">
         <div className="flex items-center gap-3 mb-6">
-          <div className="p-2 rounded-lg bg-primary/10">
+          <div className="p-2 rounded-lg bg-primary/10 ring-2 ring-primary/20">
             <Code2 className="w-6 h-6 text-primary" />
           </div>
           <h2 className="text-2xl font-bold">Prompt Content</h2>
         </div>
-        <div className="rounded-xl p-6 bg-card border border-border/50 shadow-inner">
-          <div className="prose prose-invert max-w-none">
+        <div className="rounded-xl p-6 bg-card/50 border border-border/50 shadow-inner">
+          <div className="prose max-w-none">
             {/* @ts-expect-error remark-gfm type mismatch */}
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
               {prompt.content}
@@ -108,14 +109,14 @@ export default async function PromptDetailPage({ params }: Props) {
 
       {/* Instructions */}
       {prompt.instructions && (
-        <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-8 mb-8 shadow-lg hover:shadow-xl transition-shadow">
+        <div className="glass gradient-border rounded-xl p-8 mb-8 card-interactive">
           <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 rounded-lg bg-blue-500/10">
+            <div className="p-2 rounded-lg bg-blue-500/10 ring-2 ring-blue-500/20">
               <BookOpen className="w-6 h-6 text-blue-500" />
             </div>
             <h2 className="text-2xl font-bold">How to Use</h2>
           </div>
-          <div className="prose prose-invert max-w-none leading-relaxed">
+          <div className="prose max-w-none leading-relaxed">
             {/* @ts-expect-error remark-gfm type mismatch */}
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
               {prompt.instructions}
@@ -126,15 +127,15 @@ export default async function PromptDetailPage({ params }: Props) {
 
       {/* Example Output */}
       {prompt.exampleOutput && (
-        <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-8 mb-8 shadow-lg hover:shadow-xl transition-shadow">
+        <div className="glass gradient-border rounded-xl p-8 mb-8 card-interactive">
           <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 rounded-lg bg-green-500/10">
+            <div className="p-2 rounded-lg bg-green-500/10 ring-2 ring-green-500/20">
               <Lightbulb className="w-6 h-6 text-green-500" />
             </div>
             <h2 className="text-2xl font-bold">Example Output</h2>
           </div>
-          <div className="rounded-xl p-6 bg-card border border-border/50 shadow-inner">
-            <div className="prose prose-invert max-w-none">
+          <div className="rounded-xl p-6 bg-card/50 border border-border/50 shadow-inner">
+            <div className="prose max-w-none">
               {/* @ts-expect-error remark-gfm type mismatch */}
               <ReactMarkdown remarkPlugins={[remarkGfm]}>
                 {prompt.exampleOutput}
@@ -146,14 +147,14 @@ export default async function PromptDetailPage({ params }: Props) {
 
       {/* Author Info */}
       {prompt.user && (
-        <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-8 shadow-lg hover:shadow-xl transition-shadow">
+        <div className="glass gradient-border rounded-xl p-8 card-interactive">
           <h2 className="text-2xl font-bold mb-6">About the Author</h2>
           <div className="flex items-center gap-4">
             {prompt.user.image && (
               <img
                 src={prompt.user.image}
                 alt={prompt.user.name || "User"}
-                className="w-16 h-16 rounded-full ring-2 ring-primary/20"
+                className="w-16 h-16 rounded-full ring-4 ring-primary/20 transition-all hover:ring-primary/40"
               />
             )}
             <div>
