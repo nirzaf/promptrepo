@@ -14,7 +14,7 @@ export default async function CategoriesPage() {
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 text-gradient">
             Browse by Category
           </h1>
-          <div className="h-1 w-32 mx-auto bg-gradient-to-r from-transparent via-primary to-transparent rounded-full"></div>
+          <div className="h-1 w-32 mx-auto bg-gradient-to-r from-transparent via-primary to-transparent rounded-full" />
         </div>
         <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
           Discover exceptional prompts organized by category
@@ -38,7 +38,7 @@ export default async function CategoriesPage() {
                   style={{
                     background: `radial-gradient(circle at 50% 50%, ${category.color || "var(--color-primary)"}, transparent 70%)`,
                   }}
-                ></div>
+                />
               </div>
 
               {/* Content */}
@@ -79,7 +79,7 @@ export default async function CategoriesPage() {
 
               {/* Shine effect on hover */}
               <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none">
-                <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
               </div>
             </div>
             <div className="spotlight"></div>
@@ -89,8 +89,8 @@ export default async function CategoriesPage() {
 
       {/* Decorative Elements */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/5 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
       </div>
     </div>
   );
