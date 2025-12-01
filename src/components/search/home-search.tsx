@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import type { Route } from "next";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, Loader2 } from "lucide-react";
@@ -33,7 +34,7 @@ export function HomeSearchBar() {
     setSubmitting(true);
     // Navigate to Explore which uses the default search endpoint and filters
     const url = trimmed ? `/explore?q=${encodeURIComponent(trimmed)}` : "/explore";
-    router.push(url as any);
+    router.push(url as Route);
     setSubmitting(false);
   };
 

@@ -1,109 +1,91 @@
 "use client";
 
 import * as React from "react";
-import { X } from "lucide-react";
+import { X, ChevronDown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Command, CommandGroup, CommandItem, CommandList } from "@/components/ui/command";
-import { Command as CommandPrimitive } from "cmdk";
 
 type Option = {
-    label: string;
-    value: string;
+  label: string;
+  value: string;
 };
 
 interface MultiSelectProps {
-    options: Option[];
-    selected: string[];
-    onChange: (selected: string[]) => void;
-    placeholder?: string;
-    className?: string;
+  options: Option[];
+  selected: string[];
+  onChange: (selected: string[]) => void;
+  placeholder?: string;
+  className?: string;
 }
 
 export function MultiSelect({
-    options,
-    selected,
-    onChange,
-    placeholder = "Select items...",
-    className,
+  options,
+  selected,
+  onChange,
+  placeholder = "Select items...",
+  className,
 }: MultiSelectProps) {
-    const inputRef = React.useRef<HTMLInputElement>(null);
-    const [open, setOpen] = React.useState(false);
-    const [inputValue, setInputValue] = React.useState("");
+  const [open, setOpen] = React.useState(false);
+  const toggle = () => setOpen((o) => !o);
 
-    const handleUnselect = (value: string) => {
-        onChange(selected.filter((s) => s !== value));
-    };
+  const handleSelect = (value: string) => {
+    if (selected.includes(value)) {
+      onChange(selected.filter((v) => v !== value));
+    } else {
+      onChange([...selected, value]);
+    }
+  };
 
-    const handleKeyDown = React.useCallback(
-        (e: React.KeyboardEvent<HTMLDivElement>) => {
-            const input = inputRef.current;
-            if (input) {
-                if (e.key === "Delete" || e.key === "Backspace") {
-                    if (input.value === "" && selected.length > 0) {
-                        handleUnselect(selected[selected.length - 1]);
-                    }
-                }
-                if (e.key === "Escape") {
-                    input.blur();
-                }
-            }
-        },
-        [selected]
-    );
+  const labelFor = (value: string) => options.find((o) => o.value === value)?.label ?? value;
 
-    const selectables = options.filter((option) => !selected.includes(option.value));
-
-    return (
-        <Command
-            onKeyDown={handleKeyDown}
-            className="overflow-visible bg-transparent"
+  return (
+    <div className={className}>
+      <div className="border-2 border-border rounded-md p-2">
+        <div className="flex flex-wrap gap-2">
+          {selected.length === 0 && (
+            <span className="text-sm text-muted-foreground">{placeholder}</span>
+          )}
+          {selected.map((v) => (
+            <Badge key={v} variant="secondary" className="flex items-center gap-1">
+              {labelFor(v)}
+              <button
+                type="button"
+                className="ml-1 rounded-full outline-none focus:ring-2 focus:ring-ring"
+                onClick={() => onChange(selected.filter((s) => s !== v))}
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </Badge>
+          ))}
+        </div>
+        <button
+          type="button"
+          onClick={toggle}
+          className="mt-2 w-full px-3 py-2 text-sm text-muted-foreground hover:text-foreground border rounded-md flex items-center justify-between"
         >
-            <div
-                className="group border border-input px-3 py-2 text-sm ring-offset-background rounded-md focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2"
-            >
-                <div className="flex gap-1 flex-wrap">
-                    {selected.map((value) => {
-                        const option = options.find((o) => o.value === value);
-                        return (
-                            <Badge key={value} variant="secondary" className="hover:bg-secondary/80">
-                                {option?.label || value}
-                                <button
-                                    className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                                    onKeyDown={(e) => {
-                                        if (e.key === "Enter") {
-                                            handleUnselect(value);
-                                        }
-                                    }}
-                                    onMouseDown={(e) => {
-                                        e.preventDefault();
-                                        e.stopPropagation();
-                                    }}
-                                    onClick={() => handleUnselect(value)}
-                                >
-                                    <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
-                                </button>
-                            </Badge>
-                        );
-                    })}
-                    <CommandPrimitive.Input
-                        ref={inputRef}
-                        value={inputValue}
-                        onValueChange={setInputValue}
-                        onBlur={() => setOpen(false)}
-                        onFocus={() => setOpen(true)}
-                        onChange([...selected, option.value]);
-                                        }}
-                    className="cursor-pointer"
-                                    >
-                    {option.label}
-                </CommandItem>
-                                ))}
-            </CommandGroup>
-        </CommandList>
-                    </div >
-                ) : null
-}
-            </div >
-        </Command >
-    );
+          <span>Choose tags</span>
+          <ChevronDown className="w-4 h-4" />
+        </button>
+      </div>
+
+      {open && (
+        <div className="mt-2 border rounded-md bg-card">
+          <ul className="max-h-48 overflow-auto">
+            {options.map((opt) => (
+              <li key={opt.value} className="flex items-center gap-2 px-3 py-2 hover:bg-muted">
+                <input
+                  id={`opt-${opt.value}`}
+                  type="checkbox"
+                  checked={selected.includes(opt.value)}
+                  onChange={() => handleSelect(opt.value)}
+                />
+                <label htmlFor={`opt-${opt.value}`} className="cursor-pointer">
+                  {opt.label}
+                </label>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
 }
