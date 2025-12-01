@@ -1,10 +1,11 @@
 import { db } from "@/db";
-import { prompts, users, categories, aiModels } from "@/db/schema";
-import { eq, desc, and, or, like, sql } from "drizzle-orm";
+import { prompts, users, categories, aiModels, tags as tagsTable, promptTags } from "@/db/schema";
+import { eq, desc, and, or, like, sql, inArray } from "drizzle-orm";
 
 export type SearchFilters = {
     categorySlug?: string;
     aiModelSlug?: string;
+    tags?: string[];
     limit?: number;
     offset?: number;
 };
@@ -13,6 +14,7 @@ export async function searchPrompts(query: string, filters: SearchFilters = {}) 
     const {
         categorySlug,
         aiModelSlug,
+        tags,
         limit = 20,
         offset = 0,
     } = filters;
@@ -62,6 +64,42 @@ export async function searchPrompts(query: string, filters: SearchFilters = {}) 
         }
     }
 
+    // Add tags filter if provided
+    if (tags && tags.length > 0) {
+        // Find prompts that have ANY of the selected tags (OR logic)
+        // Or ALL? Usually filters are AND. But for tags, often OR.
+        // Let's do OR for now as it's more common in discovery.
+        // Actually, user usually expects "prompts with tag A AND tag B".
+        // Let's do AND logic: prompts that have ALL selected tags.
+
+        // 1. Get tag IDs
+        const tagRecords = await db
+            .select({ id: tagsTable.id })
+            .from(tagsTable)
+            .where(inArray(tagsTable.slug, tags));
+
+        const tagIds = tagRecords.map(t => t.id);
+
+        if (tagIds.length > 0) {
+            // Subquery to find prompt IDs that have all these tags
+            const matchingPromptIds = await db
+                .select({ promptId: promptTags.promptId })
+                .from(promptTags)
+                .where(inArray(promptTags.tagId, tagIds))
+                .groupBy(promptTags.promptId)
+                .having(sql`COUNT(DISTINCT ${promptTags.tagId}) = ${tagIds.length}`);
+
+            const ids = matchingPromptIds.map(p => p.promptId);
+
+            if (ids.length > 0) {
+                conditions.push(inArray(prompts.id, ids));
+            } else {
+                // No prompts match all tags
+                return [];
+            }
+        }
+    }
+
     // Execute search query
     const results = await db
         .select({
@@ -80,6 +118,7 @@ export async function searchPrompts(query: string, filters: SearchFilters = {}) 
                 name: users.name,
                 username: users.username,
                 image: users.image,
+                reputationScore: users.reputationScore,
             },
             category: {
                 id: categories.id,

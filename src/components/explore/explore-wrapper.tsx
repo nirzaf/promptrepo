@@ -17,6 +17,7 @@ type Prompt = {
         name: string | null;
         username: string | null;
         image: string | null;
+        reputationScore?: number | null;
     } | null;
     category: {
         id: string;
@@ -43,10 +44,18 @@ type AIModel = {
     slug: string;
 };
 
+type Tag = {
+    id: string;
+    name: string;
+    slug: string;
+    usageCount: number | null;
+};
+
 interface ExploreWrapperProps {
     initialPrompts: Prompt[];
     categories: Category[];
     aiModels: AIModel[];
+    tags: Tag[];
     itemsPerPage?: number;
 }
 

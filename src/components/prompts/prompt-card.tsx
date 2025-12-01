@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Star, Copy, Eye, GitFork } from "lucide-react";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
 import ReactMarkdown from "react-markdown";
@@ -23,6 +24,7 @@ type PromptCardProps = {
             name: string | null;
             username: string | null;
             image: string | null;
+            reputationScore?: number | null;
         } | null;
         category: {
             name: string;
@@ -202,15 +204,24 @@ export function PromptCard({ prompt }: PromptCardProps) {
                         {prompt.user ? (
                             <>
                                 {prompt.user.image && (
-                                    <img
+                                    <Image
                                         src={prompt.user.image}
                                         alt={prompt.user.name || "User"}
-                                        className="w-7 h-7 rounded-full ring-2 ring-primary/20 transition-all group-hover:ring-primary/40"
+                                        width={28}
+                                        height={28}
+                                        className="rounded-full ring-2 ring-primary/20 transition-all group-hover:ring-primary/40"
                                     />
                                 )}
-                                <span className="text-muted-foreground transition-colors group-hover:text-foreground font-medium">
-                                    by {prompt.user.name || prompt.user.username || "Anonymous"}
-                                </span>
+                                <div className="flex flex-col">
+                                    <span className="text-muted-foreground transition-colors group-hover:text-foreground font-medium leading-none">
+                                        {prompt.user.name || prompt.user.username || "Anonymous"}
+                                    </span>
+                                    {/* Reputation Badge */}
+                                    <span className="text-[10px] text-muted-foreground/70 font-mono mt-0.5 flex items-center gap-1">
+                                        <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500/50"></span>
+                                        Rep: {prompt.user.reputationScore || 0}
+                                    </span>
+                                </div>
                             </>
                         ) : (
                             <span className="text-muted-foreground italic">

@@ -3,14 +3,16 @@ import {
   getPublicPrompts,
   getCategories,
   getAIModels,
+  getTags,
 } from "@/db/queries/prompts";
 import { ExploreWrapper } from "@/components/explore/explore-wrapper";
 
 export default async function ExplorePage() {
-  const [prompts, categories, aiModels] = await Promise.all([
+  const [prompts, categories, aiModels, tags] = await Promise.all([
     getPublicPrompts(100, 0, "rating"),
     getCategories(),
     getAIModels(),
+    getTags(),
   ]);
 
   return (
@@ -18,6 +20,7 @@ export default async function ExplorePage() {
       initialPrompts={prompts}
       categories={categories}
       aiModels={aiModels}
+      tags={tags}
       itemsPerPage={12}
     />
   );

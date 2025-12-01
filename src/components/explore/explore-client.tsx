@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { PromptCard } from "@/components/prompts/prompt-card";
 import { Pagination } from "@/components/ui/pagination";
+import { MultiSelect } from "@/components/ui/multi-select";
 import * as Icons from "lucide-react";
 
 type Prompt = {
@@ -20,6 +21,7 @@ type Prompt = {
     name: string | null;
     username: string | null;
     image: string | null;
+    reputationScore?: number | null;
   } | null;
   category: {
     id: string;
@@ -46,10 +48,18 @@ type AIModel = {
   slug: string;
 };
 
+type Tag = {
+  id: string;
+  name: string;
+  slug: string;
+  usageCount: number | null;
+};
+
 interface ExploreClientProps {
   initialPrompts: Prompt[];
   categories: Category[];
   aiModels: AIModel[];
+  tags: Tag[];
   itemsPerPage?: number;
 }
 
@@ -57,6 +67,7 @@ export function ExploreClient({
   initialPrompts,
   categories,
   aiModels,
+  tags,
   itemsPerPage = 12,
 }: ExploreClientProps) {
   const router = useRouter();
@@ -65,15 +76,17 @@ export function ExploreClient({
   const [currentPage, setCurrentPage] = useState(1);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [searchQuery, setSearchQuery] = useState(searchParams.get("q") || "");
-  const [categoryFilter, setCategoryFilter] = useState(
-    searchParams.get("category") || ""
-  );
-  const [modelFilter, setModelFilter] = useState(
-    searchParams.get("aiModel") || ""
-  );
-  const debounceTimeout = useRef<NodeJS.Timeout | undefined>(undefined);
 
+  // Initialize state from URL
+  const [searchQuery, setSearchQuery] = useState(searchParams.get("q") || "");
+  const [categoryFilter, setCategoryFilter] = useState(searchParams.get("category") || "");
+  const [modelFilter, setModelFilter] = useState(searchParams.get("aiModel") || "");
+
+  // Parse tags from URL (comma separated)
+  const initialTags = searchParams.get("tags") ? searchParams.get("tags")!.split(",") : [];
+  const [selectedTags, setSelectedTags] = useState<string[]>(initialTags);
+
+  const debounceTimeout = useRef<NodeJS.Timeout | undefined>(undefined);
 
   const totalPages = Math.ceil(prompts.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -82,13 +95,14 @@ export function ExploreClient({
 
   // Fetch prompts based on filters
   const fetchPrompts = useCallback(
-    async (query: string, category: string, model: string) => {
+    async (query: string, category: string, model: string, tags: string[]) => {
       setLoading(true);
       try {
         const params = new URLSearchParams();
         if (query) params.set("q", query);
         if (category) params.set("category", category);
         if (model) params.set("aiModel", model);
+        if (tags.length > 0) params.set("tags", tags.join(","));
 
         const response = await fetch(`/api/prompts/search?${params.toString()}`);
 
@@ -105,14 +119,22 @@ export function ExploreClient({
         if (query) newParams.set("q", query);
         if (category) newParams.set("category", category);
         if (model) newParams.set("aiModel", model);
+        if (tags.length > 0) newParams.set("tags", tags.join(","));
 
         const newUrl = newParams.toString()
           ? `/explore?${newParams.toString()}`
           : "/explore";
         window.history.replaceState(null, "", newUrl);
+
+        // Save filters to localStorage
+        localStorage.setItem("promptrepo_filters", JSON.stringify({
+          category,
+          model,
+          tags
+        }));
+
       } catch (error) {
         console.error("Error fetching prompts:", error);
-        // On error, keep the current prompts or show empty state
         setPrompts([]);
       } finally {
         setLoading(false);
@@ -121,6 +143,23 @@ export function ExploreClient({
     []
   );
 
+  // Load saved filters on mount if URL params are empty
+  useEffect(() => {
+    if (!searchParams.toString()) {
+      const savedFilters = localStorage.getItem("promptrepo_filters");
+      if (savedFilters) {
+        try {
+          const { category, model, tags } = JSON.parse(savedFilters);
+          if (category) setCategoryFilter(category);
+          if (model) setModelFilter(model);
+          if (tags && Array.isArray(tags)) setSelectedTags(tags);
+        } catch (e) {
+          console.error("Failed to parse saved filters", e);
+        }
+      }
+    }
+  }, []);
+
   // Debounced search
   useEffect(() => {
     if (debounceTimeout.current) {
@@ -128,7 +167,7 @@ export function ExploreClient({
     }
 
     debounceTimeout.current = setTimeout(() => {
-      fetchPrompts(searchQuery, categoryFilter, modelFilter);
+      fetchPrompts(searchQuery, categoryFilter, modelFilter, selectedTags);
     }, 300);
 
     return () => {
@@ -136,7 +175,7 @@ export function ExploreClient({
         clearTimeout(debounceTimeout.current);
       }
     };
-  }, [searchQuery, categoryFilter, modelFilter, fetchPrompts]);
+  }, [searchQuery, categoryFilter, modelFilter, selectedTags, fetchPrompts]);
 
   const handlePageChange = (page: number) => {
     setIsTransitioning(true);
@@ -150,6 +189,8 @@ export function ExploreClient({
       }, 50);
     }, 150);
   };
+
+  const tagOptions = tags.map(tag => ({ label: tag.name, value: tag.slug }));
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -181,8 +222,8 @@ export function ExploreClient({
         </div>
 
         {/* Filters */}
-        <div className="flex gap-4 flex-wrap items-end">
-          <div className="flex-1 min-w-[200px]">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+          <div className="flex-1">
             <label
               htmlFor="category-filter"
               className="text-sm font-medium mb-2 flex items-center gap-2 text-foreground"
@@ -204,7 +245,7 @@ export function ExploreClient({
               ))}
             </select>
           </div>
-          <div className="flex-1 min-w-[200px]">
+          <div className="flex-1">
             <label
               htmlFor="model-filter"
               className="text-sm font-medium mb-2 flex items-center gap-2 text-foreground"
@@ -227,22 +268,39 @@ export function ExploreClient({
             </select>
           </div>
 
-          {/* Clear Filters Button */}
-          {(searchQuery || categoryFilter || modelFilter) && (
+          <div className="flex-1">
+            <label className="text-sm font-medium mb-2 flex items-center gap-2 text-foreground">
+              <Icons.Tag className="w-4 h-4" />
+              Tags
+            </label>
+            <MultiSelect
+              options={tagOptions}
+              selected={selectedTags}
+              onChange={setSelectedTags}
+              placeholder="Filter by tags..."
+            />
+          </div>
+        </div>
+
+        {/* Clear Filters Button */}
+        {(searchQuery || categoryFilter || modelFilter || selectedTags.length > 0) && (
+          <div className="flex justify-end">
             <button
               type="button"
               onClick={() => {
                 setSearchQuery("");
                 setCategoryFilter("");
                 setModelFilter("");
+                setSelectedTags([]);
+                localStorage.removeItem("promptrepo_filters");
               }}
               className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground border-2 border-border hover:border-primary rounded-lg transition-all flex items-center gap-2"
             >
               <Icons.X className="w-4 h-4" />
               Clear Filters
             </button>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
       {/* Results Count */}
@@ -265,13 +323,14 @@ export function ExploreClient({
           <p className="text-muted-foreground mb-4">
             Try adjusting your filters or search query
           </p>
-          {(searchQuery || categoryFilter || modelFilter) && (
+          {(searchQuery || categoryFilter || modelFilter || selectedTags.length > 0) && (
             <button
               type="button"
               onClick={() => {
                 setSearchQuery("");
                 setCategoryFilter("");
                 setModelFilter("");
+                setSelectedTags([]);
               }}
               className="px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
             >
