@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import { Book, Menu, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -101,9 +100,8 @@ export function DocsClient({ docs, defaultDoc }: DocsClientProps) {
 
                         {/* Markdown Content */}
                         <div className="prose prose-lg max-w-none dark:prose-invert">
-                            {/* @ts-expect-error remark-gfm type mismatch */}
-                            <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                                {activeDoc.content}
+                            <ReactMarkdown>
+                                {activeDoc?.content ?? ""}
                             </ReactMarkdown>
                         </div>
                     </div>
