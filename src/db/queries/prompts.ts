@@ -1,6 +1,7 @@
 import { db } from "@/db";
 import { prompts, users, categories, aiModels } from "@/db/schema";
 import { eq, desc, and, sql } from "drizzle-orm";
+import { unstable_cache } from "next/cache";
 
 export async function getPublicPrompts(limit = 20, offset = 0, sort: "newest" | "rating" = "rating") {
     const orderBy = sort === "rating"
@@ -100,78 +101,99 @@ export async function getPromptBySlug(slug: string) {
     return result[0] || null;
 }
 
-export async function getTrendingPrompts(limit = 10) {
-    return await db
-        .select({
-            id: prompts.id,
-            slug: prompts.slug,
-            title: prompts.title,
-            description: prompts.description,
-            content: prompts.content,
-            viewCount: prompts.viewCount,
-            copyCount: prompts.copyCount,
-            ratingAvg: prompts.ratingAvg,
-            ratingCount: prompts.ratingCount,
-            user: {
-                name: users.name,
-                username: users.username,
-                image: users.image,
-            },
-            category: {
+export const getTrendingPrompts = unstable_cache(
+    async (limit = 10) => {
+        return await db
+            .select({
+                id: prompts.id,
+                slug: prompts.slug,
+                title: prompts.title,
+                description: prompts.description,
+                content: prompts.content,
+                viewCount: prompts.viewCount,
+                copyCount: prompts.copyCount,
+                ratingAvg: prompts.ratingAvg,
+                ratingCount: prompts.ratingCount,
+                user: {
+                    name: users.name,
+                    username: users.username,
+                    image: users.image,
+                },
+                category: {
+                    id: categories.id,
+                    name: categories.name,
+                    slug: categories.slug,
+                    color: categories.color,
+                },
+            })
+            .from(prompts)
+            .leftJoin(users, eq(prompts.userId, users.id))
+            .leftJoin(categories, eq(prompts.categoryId, categories.id))
+            .where(
+                and(
+                    eq(prompts.visibility, "public"),
+                    eq(prompts.status, "published")
+                )
+            )
+            .orderBy(
+                desc(
+                    sql`(${prompts.viewCount} * 1 + ${prompts.copyCount} * 3 + ${prompts.ratingCount} * 5)`
+                )
+            )
+            .limit(limit);
+    },
+    ["trending-prompts"],
+    {
+        revalidate: 60, // Cache for 60 seconds
+        tags: ["prompts", "trending"],
+    }
+);
+
+export const getCategories = unstable_cache(
+    async () => {
+        return await db
+            .select({
                 id: categories.id,
                 name: categories.name,
                 slug: categories.slug,
+                description: categories.description,
+                icon: categories.icon,
                 color: categories.color,
-            },
-        })
-        .from(prompts)
-        .leftJoin(users, eq(prompts.userId, users.id))
-        .leftJoin(categories, eq(prompts.categoryId, categories.id))
-        .where(
-            and(
-                eq(prompts.visibility, "public"),
-                eq(prompts.status, "published")
+                parentId: categories.parentId,
+                sortOrder: categories.sortOrder,
+                createdAt: categories.createdAt,
+                promptCount: sql<number>`CAST(COUNT(DISTINCT ${prompts.id}) AS UNSIGNED)`,
+            })
+            .from(categories)
+            .leftJoin(
+                prompts,
+                and(
+                    eq(prompts.categoryId, categories.id),
+                    eq(prompts.visibility, "public"),
+                    eq(prompts.status, "published")
+                )
             )
-        )
-        .orderBy(
-            desc(
-                sql`(${prompts.viewCount} * 1 + ${prompts.copyCount} * 3 + ${prompts.ratingCount} * 5)`
-            )
-        )
-        .limit(limit);
-}
+            .groupBy(categories.id)
+            .orderBy(categories.sortOrder, categories.name);
+    },
+    ["categories"],
+    {
+        revalidate: 300, // Cache for 5 minutes
+        tags: ["categories"],
+    }
+);
 
-export async function getCategories() {
-    return await db
-        .select({
-            id: categories.id,
-            name: categories.name,
-            slug: categories.slug,
-            description: categories.description,
-            icon: categories.icon,
-            color: categories.color,
-            parentId: categories.parentId,
-            sortOrder: categories.sortOrder,
-            createdAt: categories.createdAt,
-            promptCount: sql<number>`CAST(COUNT(DISTINCT ${prompts.id}) AS UNSIGNED)`,
-        })
-        .from(categories)
-        .leftJoin(
-            prompts,
-            and(
-                eq(prompts.categoryId, categories.id),
-                eq(prompts.visibility, "public"),
-                eq(prompts.status, "published")
-            )
-        )
-        .groupBy(categories.id)
-        .orderBy(categories.sortOrder, categories.name);
-}
-
-export async function getAIModels() {
-    return await db
-        .select()
-        .from(aiModels)
-        .where(eq(aiModels.isActive, 1))
-        .orderBy(aiModels.sortOrder, aiModels.name);
-}
+export const getAIModels = unstable_cache(
+    async () => {
+        return await db
+            .select()
+            .from(aiModels)
+            .where(eq(aiModels.isActive, 1))
+            .orderBy(aiModels.sortOrder, aiModels.name);
+    },
+    ["ai-models"],
+    {
+        revalidate: 3600, // Cache for 1 hour (AI models rarely change)
+        tags: ["ai-models"],
+    }
+);

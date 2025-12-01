@@ -1,10 +1,10 @@
-export const dynamic = "force-dynamic";
+export const revalidate = 60; // ISR: Revalidate every 60 seconds
 import {
   getPublicPrompts,
   getCategories,
   getAIModels,
 } from "@/db/queries/prompts";
-import { ExploreClient } from "@/components/explore/explore-client";
+import { ExploreWrapper } from "@/components/explore/explore-wrapper";
 
 export default async function ExplorePage() {
   const [prompts, categories, aiModels] = await Promise.all([
@@ -14,7 +14,7 @@ export default async function ExplorePage() {
   ]);
 
   return (
-    <ExploreClient
+    <ExploreWrapper
       initialPrompts={prompts}
       categories={categories}
       aiModels={aiModels}

@@ -1,8 +1,9 @@
-export const dynamic = "force-dynamic";
+export const revalidate = 60; // ISR: Revalidate every 60 seconds
 import Link from "next/link";
 import { getPublicPrompts, getTrendingPrompts } from "@/db/queries/prompts";
 import { PromptCard } from "@/components/prompts/prompt-card";
 import { Button } from "@/components/ui/button";
+import { HomeSearchBar } from "@/components/search/home-search";
 import { SpotlightGrid } from "@/components/ui/spotlight-grid";
 
 export default async function HomePage() {
@@ -19,9 +20,12 @@ export default async function HomePage() {
             Discover Powerful AI Prompts
           </span>
         </h1>
-        <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+        <p className="text-xl text-muted-foreground mb-6 max-w-2xl mx-auto">
           Browse, share, and collaborate on exceptional prompts for ChatGPT, Claude, Gemini, and more.
         </p>
+        <div className="mb-8">
+          <HomeSearchBar />
+        </div>
         <div className="flex gap-4 justify-center">
           <Button size="lg" asChild className="glow">
             <Link href="/explore">Explore Prompts</Link>

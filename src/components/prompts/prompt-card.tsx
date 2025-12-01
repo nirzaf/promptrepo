@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Star, Copy, Eye } from "lucide-react";
+import { Star, Copy, Eye, GitFork } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
 import ReactMarkdown from "react-markdown";
@@ -119,6 +119,27 @@ export function PromptCard({ prompt }: PromptCardProps) {
                         <Copy className="w-5 h-5 text-primary transition-transform group-hover:scale-110" />
                     )}
                 </button>
+
+                {/* Remix Button */}
+                <Link
+                    href={`/dashboard/prompts/new?remix=${prompt.id}`}
+                    onClick={(e) => e.stopPropagation()}
+                    className={cn(
+                        "absolute top-4 right-20 p-3 rounded-xl transition-all duration-300 z-10",
+                        "opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0",
+                        "backdrop-blur-md border-2",
+                        "shadow-lg hover:shadow-xl",
+                        "active:scale-95 active:translate-y-0.5",
+                        "transform-gpu will-change-transform",
+                        "bg-linear-to-br from-blue-500/20 to-blue-600/40 border-blue-500/40 hover:border-blue-500/60 shadow-blue-500/20"
+                    )}
+                    style={{
+                        boxShadow: "0 4px 15px rgba(59, 130, 246, 0.25), inset 0 -2px 8px rgba(0, 0, 0, 0.2), inset 0 2px 8px rgba(255, 255, 255, 0.1)"
+                    }}
+                    aria-label="Remix this prompt"
+                >
+                    <GitFork className="w-5 h-5 text-blue-400 transition-transform hover:scale-110" />
+                </Link>
 
                 {/* Main Content - Flex Grow to Fill Space */}
                 <div className="flex flex-col flex-1">

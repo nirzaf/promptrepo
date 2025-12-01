@@ -3,7 +3,7 @@
 import { db } from "@/db";
 import { prompts } from "@/db/schema";
 import { generateId, generateSlug } from "@/lib/utils";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { eq, sql } from "drizzle-orm";
@@ -17,6 +17,7 @@ const createPromptSchema = z.object({
     categoryId: z.string().optional(),
     aiModelId: z.string().optional(),
     visibility: z.enum(["public", "private", "unlisted"]).default("public"),
+    forkedFromId: z.string().optional(),
 });
 
 export async function createPrompt(formData: FormData) {
@@ -36,6 +37,7 @@ export async function createPrompt(formData: FormData) {
         categoryId: formData.get("categoryId") as string,
         aiModelId: formData.get("aiModelId") as string,
         visibility: (formData.get("visibility") as any) || "public",
+        forkedFromId: formData.get("forkedFromId") as string,
     };
 
     const validated = createPromptSchema.parse(data);
@@ -55,8 +57,10 @@ export async function createPrompt(formData: FormData) {
         aiModelId: validated.aiModelId || null,
         visibility: validated.visibility,
         status: "published",
+        forkedFromId: validated.forkedFromId || null,
     });
 
+    // Invalidate caches
     revalidatePath("/");
     revalidatePath("/explore");
     redirect(`/prompt/${slug}`);

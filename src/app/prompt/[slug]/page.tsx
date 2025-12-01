@@ -1,9 +1,10 @@
-export const dynamic = "force-dynamic";
+export const revalidate = 3600; // ISR: Revalidate every hour (prompts change less frequently)
 import { getPromptBySlug } from "@/db/queries/prompts";
 import { notFound } from "next/navigation";
 import { Eye, Star, Share2, BookOpen, Lightbulb, Code2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CopyButton } from "@/components/shared/copy-button";
+import { PromptPlayground } from "@/components/prompts/prompt-playground";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -144,6 +145,12 @@ export default async function PromptDetailPage({ params }: Props) {
           </div>
         </div>
       )}
+
+      {/* Interactive Playground */}
+      <PromptPlayground
+        promptContent={prompt.content}
+        variables={prompt.variables as any}
+      />
 
       {/* Author Info */}
       {prompt.user && (
